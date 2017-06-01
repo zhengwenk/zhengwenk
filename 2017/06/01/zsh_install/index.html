@@ -7,7 +7,7 @@
     
 
     <title>
-      归档 
+      手动安装zsh | 口阿岂几的blog 
     </title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -16,15 +16,16 @@
     
     
 
-    <meta name="description" content="test">
-<meta property="og:type" content="website">
-<meta property="og:title" content="归档">
-<meta property="og:url" content="http://www.zhengwenkai.com/archives/index.html">
+    <meta name="description" content="zsh安装，zsh插件">
+<meta property="og:type" content="article">
+<meta property="og:title" content="手动安装zsh | 口阿岂几的blog">
+<meta property="og:url" content="http://www.zhengwenkai.com/2017/06/01/zsh_install/index.html">
 <meta property="og:site_name" content="口阿岂几的blog">
-<meta property="og:description" content="test">
+<meta property="og:description" content="zsh安装，zsh插件">
+<meta property="og:updated_time" content="2017-06-01T10:30:38.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="归档">
-<meta name="twitter:description" content="test">
+<meta name="twitter:title" content="手动安装zsh | 口阿岂几的blog">
+<meta name="twitter:description" content="zsh安装，zsh插件">
     
     
     
@@ -149,68 +150,70 @@ classes that you can use:
         <div class="content-wrapper__inner entry">
             
 
+<article class="post-container post-container--single">
 
-   <!-- do nothing -->
-
-
-<div class="main-post-list">
-    <ol class="post-list">
+  <header class="post-header">
     
-    
-    <li>
+    <h1 class="post-title">手动安装zsh</h1>
 
-      <h2 class="post-list__post-title post-title">
-        <a href="/2017/06/01/zsh_install/" title="link to 手动安装zsh">手动安装zsh</a>
-      </h2>
-
-      <div class="post-list__meta">
-
-        <time datetime="2017-06-01" class="post-list__meta--date date">2017-06-01</time> 
-      </div>
-
-      <div class="excerpt">
-        
-          zsh安装，zsh插件
-        
-      </div>
-
-      <hr class="post-list__divider" />
-    </li>
-    
-    <li>
-
-      <h2 class="post-list__post-title post-title">
-        <a href="/2017/05/27/create_blog/" title="link to 使用hexo生成blog">使用hexo生成blog</a>
-      </h2>
-
-      <div class="post-list__meta">
-
-        <time datetime="2017-05-27" class="post-list__meta--date date">2017-05-27</time> 
-      </div>
-
-      <div class="excerpt">
-        
-          hexo安装，使用，文章发布
-        
-      </div>
-
-      <hr class="post-list__divider" />
-    </li>
-    
-  </ol>
-
-  <hr class="post-list__divider " />
-
-<nav class="pagination" role="navigation">
     
 
-    <span class="pagination__page-number"> 1 / 1</span>
+    <div class="post-meta">
+      <time datetime="2017-06-01" class="post-meta__date date">2017-06-01</time> 
+
+      <span class="post-meta__tags tags">
+
+          
+
+          
+
+      </span>
+    </div>
     
     
-</nav>
+
+  </header>
+
+  <section id="post-content" class="article-content post">
+    <p>接手一个老旧的项目，只能在开发机上开发。果断给自己安装zsh, 就算是只为了git插件也值得安装。(无root权限)</p>
+<ul>
+<li>下载</li>
+</ul>
+<p><code>wget http://sourceforge.net/projects/zsh/files/zsh/5.0.7/zsh-5.0.7.tar.gz</code></p>
+<ul>
+<li>安装</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">cd ~/tmp/zsh-5.0.7</div><div class="line">./configure --prefix=$HOME</div><div class="line">make</div><div class="line">make install</div></pre></td></tr></table></figure>
+<ul>
+<li>安装 oh my zsh</li>
+</ul>
+<p>自动安装</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O - | sh</div></pre></td></tr></table></figure>
+<blockquote>
+<p>我试了自动安装会提示 Zsh is not installed! Please install zsh first!。看了一下安装的sh文件，会搜索 /etc/shells 文件 <code>$(grep /zsh$ /etc/shells | wc -l)</code></p>
+</blockquote>
+<p>手动安装</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh</div><div class="line">cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc</div></pre></td></tr></table></figure>
+<blockquote>
+<p>最后就是设置成默认的shell。chsh这个命令是不能用了，因为没有root权限，所以只能在 .bash_profile 里面做手脚了。在 .bash_profile里面添加如下内容：<br><code>exec $HOME/bin/zsh -l</code><br>好了现在ssh连接到服务器上就变了zsh了。</p>
+</blockquote>
+<ul>
+<li>安装autojump</li>
+</ul>
+<p>下载</p>
+<p><code>git clone git://github.com/joelthelion/autojump.git</code></p>
+<p>安装</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">进入autojump的目录 执行安装的py脚本</div><div class="line">./install.py</div></pre></td></tr></table></figure>
+<p>安装完后，按照提示 最后把以下代码加入.zshrc：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[[ -s ~/.autojump/etc/profile.d/autojump.sh ]] &amp;&amp; . ~/.autojump/etc/profile.d/autojump.sh</div></pre></td></tr></table></figure></p>
+<p>cd 过一次的目录 下次都可以直接跳转<br>重新打开一个shell窗口，尝试一下吧。</p>
+
+  </section>
+
+  
+  
+</article>
 
 
-</div>
             <footer class="footer">
 
     <span class="footer__copyright">&copy; 2014-2015. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 | 主题<a href="https://github.com/someus/huno">Huno</a></span>
@@ -238,6 +241,18 @@ classes that you can use:
 
 
     
+
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
     
     
     <!--kill ie6 -->
