@@ -1,0 +1,372 @@
+<!DOCTYPE html><html lang="zh-cn"><head><meta name="generator" content="Hexo 3.9.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="test"><title>http包 | 口阿岂几的blog</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/6.0.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">http包</h1><a id="logo" href="/.">口阿岂几的blog</a><p class="description">一个写着写着就越来越多的blog</p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> Start</i></a><a href="/archives/"><i class="fa fa-archive"> Archiv</i></a><a href="/about/"><i class="fa fa-user"> Über</i></a><a href="/atom.xml"><i class="fa fa-rss"> RSS</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">http包</h1><div class="post-meta">Sep 6, 2019<script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><div class="post-content"><h1 id="http包"><a href="#http包" class="headerlink" title="http包"></a>http包</h1><p>Package http</p>
+<p>使用</p>
+<pre><code>import &quot;net/http&quot;
+</code></pre><p>Package http provides HTTP client and server implementations.</p>
+<p>http包提供http客户端和服务端的实现</p>
+<p>ListenAndServe starts an HTTP server with a given address and handler. </p>
+<p>ListenAndServe方法使用一个地址和处理函数启动一个http服务</p>
+<p>The handler is usually nil, which means to use DefaultServeMux. </p>
+<p>handler通常是nil，这意味者使用DefaultServeMux</p>
+<p>Handle and HandleFunc add handlers to DefaultServeMux:</p>
+<p>Handle 和 HandleFunc 方法可以添加handlers到DefaultServeMux</p>
+<h3 id="Handle-和-HandleFunc-的使用"><a href="#Handle-和-HandleFunc-的使用" class="headerlink" title="Handle 和 HandleFunc 的使用"></a>Handle 和 HandleFunc 的使用</h3><pre><code>// Handle 和 HandleFunc 的使用
+http.Handle(&quot;/foo&quot;, fooHandler)
+
+http.HandleFunc(&quot;/bar&quot;, func(w http.ResponseWriter, r *http.Request) {
+    fmt.Fprintf(w, &quot;Hello, %q&quot;, html.EscapeString(r.URL.Path))
+})
+
+log.Fatal(http.ListenAndServe(&quot;:8080&quot;, nil))
+</code></pre><h3 id="ListenAndServe-函数"><a href="#ListenAndServe-函数" class="headerlink" title="ListenAndServe 函数"></a>ListenAndServe 函数</h3><pre><code>package http
+
+// server.go 
+
+// ListenAndServe listens on the TCP network address addr and then calls
+// ListenAndServe方法 监听TCP网络地址 addr(传入参数) 然后调用
+// Serve with handler to handle requests on incoming connections.
+// Serve绑定的handler处理连接上的请求。
+// Accepted connections are configured to enable TCP keep-alives.
+// 接到的连接被配置为启用 TCP keep-alives
+// The handler is typically nil, in which case the DefaultServeMux is used.
+// 处理程序通常为nil，在这种情况下使用DefaultServeMux
+// ListenAndServe always returns a non-nil error.
+func ListenAndServe(addr string, handler Handler) error {
+    server := &amp;Server{Addr: addr, Handler: handler}
+    return server.ListenAndServe()
+}
+
+// server.ListenAndServe
+// ListenAndServe listens on the TCP network address srv.Addr and then
+// calls Serve to handle requests on incoming connections.
+// Accepted connections are configured to enable TCP keep-alives.
+//
+// If srv.Addr is blank, &quot;:http&quot; is used.
+// 如果srv.Addr为空，默认使用 &quot;:http&quot;
+//
+// ListenAndServe always returns a non-nil error. After Shutdown or Close,
+// ListenAndServe 方法始终返回一个非nil的error，Shutdown or Close 后
+// the returned error is ErrServerClosed.
+// 被返回的error是 ErrServerClosed
+func (srv *Server) ListenAndServe() error {
+    if srv.shuttingDown() {
+        return ErrServerClosed
+    }
+    addr := srv.Addr
+    if addr == &quot;&quot; {
+        addr = &quot;:http&quot;
+    }
+
+    // 监听tcp
+    ln, err := net.Listen(&quot;tcp&quot;, addr)
+
+    if err != nil {
+        return err
+    }
+  // 调用 Serve处理请求
+    return srv.Serve(tcpKeepAliveListener{ln.(*net.TCPListener)})
+}
+</code></pre><h3 id="Server-Serve"><a href="#Server-Serve" class="headerlink" title="Server.Serve"></a>Server.Serve</h3><pre><code>// Serve accepts incoming connections on the Listener l, creating a
+// new service goroutine for each. The service goroutines read requests and
+// then call srv.Handler to reply to them.
+// Serve方法接受 Listener l (监听者)传入的连接，为每个连接创建一个新的service goroutine
+// service goroutine读取请求并调用srv.Handler方法处理请求并响应
+// HTTP/2 support is only enabled if the Listener returns *tls.Conn
+// connections and they were configured with &quot;h2&quot; in the TLS
+// Config.NextProtos.
+// 只有Listener returns *tls.Conn connections 并且他们 在TLS
+// Config.NextProtos 被配置为 &quot;h2&quot;
+// Serve always returns a non-nil error and closes l.
+// After Shutdown or Close, the returned error is ErrServerClosed.
+func (srv *Server) Serve(l net.Listener) error {
+    if fn := testHookServerServe; fn != nil {
+        fn(srv, l) // call hook with unwrapped listener
+    }
+
+    // onceCloseListener wraps a net.Listener, protecting it from
+  // multiple Close calls.
+  // onceCloseListener 是对net.Listener 封装，用以防止多次close的调用
+    l = &amp;onceCloseListener{Listener: l}
+    defer l.Close()
+
+  // 启动http2 (具体代码暂不分析)
+    if err := srv.setupHTTP2_Serve(); err != nil {
+        return err
+    }
+
+    if !srv.trackListener(&amp;l, true) {
+        return ErrServerClosed
+    }
+    defer srv.trackListener(&amp;l, false)
+
+    var tempDelay time.Duration     // how long to sleep on accept failure
+
+    // 一个是Background，主要用于main函数、初始化以及测试代码中，
+  //作为Context这个树结构的最顶层的Context，也就是根Context，它不能被取消。
+    baseCtx := context.Background() // base is always background, per Issue 16220
+    ctx := context.WithValue(baseCtx, ServerContextKey, srv)
+  // 核心循环
+    for {
+    // Accept waits for and returns the next connection to the listener.
+    // Accept() (Conn, error)
+        rw, e := l.Accept()
+        if e != nil {
+            // Go 语言中提供了 select 关键字，可以同时响应多个通道的操作。
+      // select 的每个 case 都会对应一个通道的收发过程。
+            //当收发完成时，就会触发 case 中响应的语句。
+      //多个操作在每次 select 中挑选一个进行响应。
+            select {
+            case &lt;-srv.getDoneChan():
+                return ErrServerClosed
+            default:
+            }
+
+
+            if ne, ok := e.(net.Error); ok &amp;&amp; ne.Temporary() {
+                if tempDelay == 0 {
+                    tempDelay = 5 * time.Millisecond
+                } else {
+                    tempDelay *= 2
+                }
+                if max := 1 * time.Second; tempDelay &gt; max {
+                    tempDelay = max
+                }
+                srv.logf(&quot;http: Accept error: %v; retrying in %v&quot;, e, tempDelay)
+                time.Sleep(tempDelay)
+                continue
+            }
+            return e
+        }
+        tempDelay = 0
+
+    // Create new connection from rwc.
+        c := srv.newConn(rw)
+        c.setState(c.rwc, StateNew) // before Serve can return
+
+    // Go 程序中使用 go 关键字为一个函数创建一个 goroutine。
+    //  一个函数可以被创建多个 goroutine，一个 goroutine 必定对应一个函数。
+    // Serve a new connection
+        go c.serve(ctx)
+        // Go 为了实现高并发和高性能，使用了 goroutines 来处理 Conn 的读写事件，
+        // 这样每个请求都能保持独立，相互不会阻塞，可以高效的响应网络事件。
+        // 这是 Go 高效的保证。
+    }
+}
+
+func (c *conn) serve(ctx context.Context) {
+    ...
+    // serverHandler delegates to either the server&apos;s Handler or
+    // DefaultServeMux and also handles &quot;OPTIONS *&quot; requests.
+    serverHandler{c.server}.ServeHTTP(w, w.req)
+
+  ...
+}
+
+...
+type ServeMux struct {
+    mu    sync.RWMutex
+    m     map[string]muxEntry
+    es    []muxEntry // slice of entries sorted from longest to shortest.
+    hosts bool       // whether any patterns contain hostnames
+}
+
+ // DefaultServeMux is the default ServeMux used by Serve.
+ var DefaultServeMux = &amp;defaultServeMux
+ var defaultServeMux ServeMux
+...
+
+func (sh serverHandler) ServeHTTP(rw ResponseWriter, req *Request) {
+    handler := sh.srv.Handler
+    // 这里handler是通过 http.ListenAndServe 方法传入的 nil, 所以会被赋默认值
+    if handler == nil {
+        handler = DefaultServeMux
+    }
+    // 2种特殊请求 单独处理
+    if req.RequestURI == &quot;*&quot; &amp;&amp; req.Method == &quot;OPTIONS&quot; {
+        handler = globalOptionsHandler{}
+    }
+
+    handler.ServeHTTP(rw, req)
+}
+
+func (mux *ServeMux) ServeHTTP(w ResponseWriter, r *Request) {
+    if r.RequestURI == &quot;*&quot; {
+        // 判断http的版本是否至少是1.1
+        if r.ProtoAtLeast(1, 1) {
+            w.Header().Set(&quot;Connection&quot;, &quot;close&quot;)
+        }
+        w.WriteHeader(StatusBadRequest)
+        return
+    }
+
+  //
+    h, _ := mux.Handler(r)
+    h.ServeHTTP(w, r)
+}
+
+func (mux *ServeMux) Handler(r *Request) (h Handler, pattern string) {
+
+    // CONNECT requests are not canonicalized.
+  // CONNECT 请求不是一个标准请求，
+    if r.Method == &quot;CONNECT&quot; {
+        // If r.URL.Path is /tree and its handler is not registered,
+    // 假设 r.URL.Path is == &quot;/tree&quot; 并且 handler 没有被注册
+        // the /tree -&gt; /tree/ redirect applies to CONNECT requests
+    // /tree -&gt; /tree/ 的重定向会被用于 CONNECT 的请求
+        // but the path canonicalization does not.
+        if u, ok := mux.redirectToPathSlash(r.URL.Host, r.URL.Path, r.URL); ok {
+            // 301 重定向
+            return RedirectHandler(u.String(), StatusMovedPermanently), u.Path
+        }
+
+        return mux.handler(r.Host, r.URL.Path)
+    }
+
+    // All other requests have any port stripped and path cleaned
+    // before passing to mux.handler.
+    // 在通过mux.handler之前 所有其他的请求 r.Host含有port的部分会被清除
+  // path会被清洗
+    host := stripHostPort(r.Host)
+    path := cleanPath(r.URL.Path)
+
+    // If the given path is /tree and its handler is not registered,
+    // redirect for /tree/.
+    if u, ok := mux.redirectToPathSlash(host, path, r.URL); ok {
+        return RedirectHandler(u.String(), StatusMovedPermanently), u.Path
+    }
+
+    if path != r.URL.Path {
+        _, pattern = mux.handler(host, path)
+        url := *r.URL
+        url.Path = path
+        return RedirectHandler(url.String(), StatusMovedPermanently), pattern
+    }
+
+    return mux.handler(host, r.URL.Path)
+}
+
+
+// redirectToPathSlash determines if the given path needs appending &quot;/&quot; to it.
+// 该方法确定被给的path是否需要追加 &quot;/&quot;
+// This occurs when a handler for path + &quot;/&quot; was already registered, but
+// not for path itself. If the path needs appending to, it creates a new
+// URL, setting the path to u.Path + &quot;/&quot; and returning true to indicate so.
+// 当一个 处理 path + &quot;/&quot; handler 被注册, 而不是 path 本身。如果path需要被追加，
+// 则会创建一个新的url，设置path= u.Path + &quot;/&quot;, 并返回true来表示
+func (mux *ServeMux) redirectToPathSlash(host, path string, u *url.URL) (*url.URL, bool) {
+    mux.mu.RLock()
+    shouldRedirect := mux.shouldRedirectRLocked(host, path)
+    mux.mu.RUnlock()
+    if !shouldRedirect {
+        return u, false
+    }
+    path = path + &quot;/&quot;
+    u = &amp;url.URL{Path: path, RawQuery: u.RawQuery}
+    return u, true
+}
+
+func (mux *ServeMux) shouldRedirectRLocked(host, path string) bool {
+    p := []string{path, host + path}
+
+    for _, c := range p {
+        // 判断path 是否被定义在mux.m中，存在返回true 
+        if _, exist := mux.m[c]; exist {
+            // 不需要改写
+            return false
+        }
+    }
+
+    n := len(path)
+    if n == 0 {
+        return false
+    }
+    for _, c := range p {
+        if _, exist := mux.m[c+&quot;/&quot;]; exist {
+            return path[n-1] != &apos;/&apos;
+        }
+    }
+
+    return false
+}
+
+
+// handler is the main implementation of Handler.
+// handler是Handler的主要实现
+// The path is known to be in canonical form, except for CONNECT methods.
+// 除了CONNECT方法之外 path已经是规范形式的。
+func (mux *ServeMux) handler(host, path string) (h Handler, pattern string) {
+    // 由于请求涉及到并发处理，因此这里需要一个锁机制
+    mux.mu.RLock()
+    defer mux.mu.RUnlock()
+
+    // Host-specific pattern takes precedence over generic ones
+    // 特殊的host 匹配会优先覆盖一般的。
+    // 主要是处理多host服务的请求
+    if mux.hosts {
+        h, pattern = mux.match(host + path)
+    }
+    if h == nil {
+        h, pattern = mux.match(path)
+    }
+    if h == nil {
+        h, pattern = NotFoundHandler(), &quot;&quot;
+    }
+    return
+}
+
+// Find a handler on a handler map given a path string.
+// Most-specific (longest) pattern wins.
+// 匹配path 对应的handler
+func (mux *ServeMux) match(path string) (h Handler, pattern string) {
+    // Check for exact match first.
+  // 精确匹配
+    v, ok := mux.m[path]
+    if ok {
+        return v.h, v.pattern
+    }
+
+    // Check for longest valid match.  mux.es contains all patterns
+    // that end in / sorted from longest to shortest.
+    // 最长有效匹配， mux.es 包含所有 以 &quot;/&quot; 结尾的匹配 从长到短
+    for _, e := range mux.es {
+        if strings.HasPrefix(path, e.pattern) {
+            return e.h, e.pattern
+        }
+    }
+    return nil, &quot;&quot;
+}
+</code></pre><h3 id="net-Listen"><a href="#net-Listen" class="headerlink" title="net.Listen"></a>net.Listen</h3><pre><code>// Listen announces on the local network address.
+// 监听本地网络地址的通知
+// The network must be &quot;tcp&quot;, &quot;tcp4&quot;, &quot;tcp6&quot;, &quot;unix&quot; or &quot;unixpacket&quot;.
+// 
+// For TCP networks, if the host in the address parameter is empty or
+// a literal unspecified IP address, Listen listens on all available
+// unicast and anycast IP addresses of the local system.
+// 对于tcp网络 如果address参数中的主机为空或者是一个子面未指定的ip地址，
+// Listen方法监听所有可用的本地系统的单播和任波的ip地址
+// To only use IPv4, use network &quot;tcp4&quot;.
+// 如果仅使用IPv4 network 可以使用 &quot;tcp4&quot;。
+// The address can use a host name, but this is not recommended,
+// address 可以使用host name，但是不推荐
+// because it will create a listener for at most one of the host&apos;s IP
+// addresses.
+// 因为 这只会为最多一个主机的ip地址创建监听
+// If the port in the address parameter is empty or &quot;0&quot;, as in
+// &quot;127.0.0.1:&quot; or &quot;[::1]:0&quot;, a port number is automatically chosen.
+// 如果address 参数中的port是空或者 &quot;0&quot;, 例如 &quot;127.0.0.1:&quot; or &quot;[::1]:0&quot;
+// 会自动选择一个端口
+
+// The Addr method of Listener can be used to discover the chosen
+// port.
+// Listener的Addr方法可以用于发现所选的端口
+// See func Dial for a description of the network and address
+// parameters.
+func Listen(network, address string) (Listener, error) {
+    var lc ListenConfig
+    return lc.Listen(context.Background(), network, address)
+}
+</code></pre><h3 id="Context背景-和-适用场景"><a href="#Context背景-和-适用场景" class="headerlink" title="Context背景 和 适用场景"></a>Context背景 和 适用场景</h3><p>golang在1.6.2的时候还没有自己的context，在1.7的版本中就把</p>
+<p>golang.org/x/net/context包被加入到了官方的库中。</p>
+<p>golang 的 Context包，是专门用来简化对于处理单个请求的多个goroutine之间与请求域的数据、取消信号、截止时间等相关操作，这些操作可能涉及多个 API 调用。</p>
+<p>比如有一个网络请求Request，每个Request都需要开启一个goroutine做一些事情，这些goroutine又可能会开启其他的goroutine。这样的话， 我们就可以通过Context，来跟踪这些goroutine，并且通过Context来控制他们的目的，这就是Go语言为我们提供的Context，中文可以称之为“上下文”。</p>
+<p>另外一个实际例子是，在Go服务器程序中，每个请求都会有一个goroutine去处理。然而，处理程序往往还需要创建额外的goroutine去访问后端资源，比如数据库、RPC服务等。由于这些goroutine都是在处理同一个请求，所以它们往往需要访问一些共享的资源，比如用户身份信息、认证token、请求截止时间等。而且如果请求超时或者被取消后，所有的goroutine都应该马上退出并且释放相关的资源。这种情况也需要用Context来为我们取消掉所有goroutine</p>
+</div><script type="text/javascript" src="/js/share.js?v=0.0.0" async></script><a data-url="http://www.zhengwenkai.com/2019/09/06/golang-http/" data-id="ck07p6kp90005obsm1uunenmo" class="article-share-link">Aktie</a><div class="tags"></div><div class="post-nav"><a href="/2019/09/06/golang_json/" class="next">encoding/json -- 标准库中的包</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" class="search-form"><input type="text" name="q" maxlength="20" placeholder="Search"><input type="hidden" name="sitesearch" value="http://www.zhengwenkai.com"></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> Kategorien</i></div></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> Tags</i></div><div class="tagcloud"></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> Letzte</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/09/06/golang-http/">http包</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/06/golang_json/">encoding/json -- 标准库中的包</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/02/nodejs_path_resolve/">NodeJS--path.resolve</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/12/webRTC/">WebRTC学习</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/21/aws_ss/">aws以及shadowsocket</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/01/zsh_install/">手动安装zsh</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/27/create_blog/">使用hexo生成blog</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> Blogroll</i></div><ul></ul><a href="http://www.example1.com/" title="site-name1" target="_blank">site-name1</a><ul></ul><a href="http://www.example2.com/" title="site-name2" target="_blank">site-name2</a><ul></ul><a href="http://www.example3.com/" title="site-name3" target="_blank">site-name3</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">口阿岂几的blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a id="rocket" href="#top" class="show"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/3.0.47/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/3.0.47/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>

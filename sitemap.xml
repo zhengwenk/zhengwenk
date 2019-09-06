@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://www.zhengwenkai.com/2019/09/06/golang-http/</loc>
+    
+    <lastmod>2019-09-06T05:44:57.445Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://www.zhengwenkai.com/2019/09/06/golang_json/</loc>
     
     <lastmod>2019-09-06T05:26:04.273Z</lastmod>
