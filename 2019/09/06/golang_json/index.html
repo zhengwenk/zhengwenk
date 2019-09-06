@@ -1,0 +1,131 @@
+<!DOCTYPE html><html lang="zh-cn"><head><meta name="generator" content="Hexo 3.9.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="test"><title>encoding/json -- 标准库中的包 | 口阿岂几的blog</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/6.0.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">encoding/json -- 标准库中的包</h1><a id="logo" href="/.">口阿岂几的blog</a><p class="description">一个写着写着就越来越多的blog</p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> Home</i></a><a href="/archives/"><i class="fa fa-archive"> Archive</i></a><a href="/about/"><i class="fa fa-user"> About</i></a><a href="/atom.xml"><i class="fa fa-rss"> RSS</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">encoding/json -- 标准库中的包</h1><div class="post-meta">Sep 6, 2019<script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><div class="post-content"><h1 id="encoding-json-–-标准库中的包"><a href="#encoding-json-–-标准库中的包" class="headerlink" title="encoding/json – 标准库中的包"></a>encoding/json – 标准库中的包</h1><h3 id="func-Marshal"><a href="#func-Marshal" class="headerlink" title="func Marshal"></a><strong>func Marshal</strong></h3><pre><code>func Marshal(v interface{}) ([]byte, error)
+</code></pre><p><strong>Marshal returns the JSON encoding of v.</strong></p>
+<p>Marshal traverses the value v recursively.（Marshal 递归的遍历v值）</p>
+<p>If an encountered value implements the Marshaler interface and is not a nil pointer （如果遇到一个实现Marshaler interface 并且不是一个空指针的值）Marshal calls its MarshalJSON method to produce JSON.</p>
+<p>If no MarshalJSON method is present but the value implements encoding.TextMarshaler instead,(如果不存在MarshalJSON 方法,但是value实现encoding.TextMarshaler) Marshal calls its MarshalText method and encodes the result as a JSON string. (则Marshal调用其MarshalText方法并将结果编码为JSON字符串)</p>
+<p>The nil pointer exception is not strictly necessary but mimics a similar, necessary exception in the behavior of UnmarshalJSON. (空指针异常不是绝对必要的，但是在UnmarshalJSON方法的行为中模仿了类似的必要异常)</p>
+<p>Otherwise, Marshal uses the following type-dependent default encodings:</p>
+<p>另外Marshal 使用如下类型相关的默认编码</p>
+<p>Boolean values encode as JSON booleans.</p>
+<p>Floating point, integer, and Number values encode as JSON numbers.</p>
+<p>String values encode as JSON strings coerced to valid UTF-8, </p>
+<p>字符串值编码为强制为有效UTF-8的JSON字符串</p>
+<p>replacing invalid bytes with the Unicode replacement rune. </p>
+<p>用Unicode replacement rune替换无效的字节</p>
+<p>The angle brackets “&lt;” and “&gt;” are escaped to “\u003c” and “\u003e” to keep some browsers from misinterpreting JSON output as HTML. </p>
+<p>尖括号“&lt;”和“&gt;”被转义为“\ u003c”和“\ u003e” 以防止某些浏览器将JSON输出误解为HTML</p>
+<p>Ampersand “&amp;” is also escaped to “\u0026” for the same reason.</p>
+<p>同样的Ampersand “&amp;” 也被转义为”\u0026”</p>
+<p> This escaping can be disabled using an Encoder that had SetEscapeHTML(false) called on it.</p>
+<p>可以使用调用了SetEscapeHTML（false）的编码器禁用此转义</p>
+<p>Array and slice values encode as JSON arrays, except that []byte encodes as a base64-encoded string, and a nil slice encodes as the null JSON value.</p>
+<p>数组和切片值编码为JSON数组，但[]字节编码为base64编码的字符串，而nil切片编码为空JSON对象。</p>
+<p>Struct values encode as JSON objects. Each exported struct field becomes a member of the object, using the field name as the object key, unless the field is omitted for one of the reasons given below.</p>
+<p>结构体的值编码为JSON对象。每个导出的struct字段都成为对象的成员，使用字段名作为对象键,</p>
+<p>除非出于下面给出的原因，省略该字段</p>
+<p>The encoding of each struct field can be customized by the format string stored under the “json” key in the struct field’s tag. </p>
+<p>每个结构字段的编码可以通过存储在struct字段标记中的“json”键下的格式字符串来定制</p>
+<p>The format string gives the name of the field, possibly followed by a comma-separated list of options.</p>
+<p>格式字符串给出了字段的名称，可能后跟逗号分隔的选项列表。</p>
+<p>The name may be empty in order to specify options without overriding the default field name.</p>
+<p>名称可以为空，以便指定选项而不覆盖默认字段名称。</p>
+<p>The “omitempty” option specifies that the field should be omitted from the encoding if the field has an empty value, defined as false, 0, a nil pointer, a nil interface value, and any empty array, slice, map, or string.</p>
+<p>“omitempty”选项指定如果字段是空值(被定义为false, 0 , nil指针，nil接口以及任何空数组、切片、map、字符串等)，则应从编码中省略该字段</p>
+<p>As a special case, if the field tag is “-“, the field is always omitted. Note that a field with name “-“ can still be generated using the tag “-,”.</p>
+<p>Examples of struct field tags and their meanings:</p>
+<pre><code>package main
+
+import (
+    &quot;encoding/json&quot;
+    &quot;fmt&quot;
+    &quot;os&quot;
+)
+
+func main() {
+    type ColorGroup struct {
+        ID     int
+        Name   string
+        Colors []string
+    }
+    group := ColorGroup{
+        ID:     1,
+        Name:   &quot;Reds&quot;,
+        Colors: []string{&quot;Crimson&quot;, &quot;Red&quot;, &quot;Ruby&quot;, &quot;Maroon&quot;},
+    }
+    b, err := json.Marshal(group)
+    if err != nil {
+        fmt.Println(&quot;error:&quot;, err)
+    }
+    os.Stdout.Write(b)
+}
+
+// Field appears in JSON as key &quot;myName&quot;.
+Name string `json:&quot;MyName&quot;`
+// output
+//{&quot;ID&quot;:1,&quot;MyName&quot;:&quot;Reds&quot;,&quot;Colors&quot;:[&quot;Crimson&quot;,&quot;Red&quot;,&quot;Ruby&quot;,&quot;Maroon&quot;]}
+
+// Field appears in JSON as key &quot;myName&quot; and
+// the field is omitted from the object if its value is empty,
+// as defined above.
+Name string `json:&quot;MyName,omitempty&quot;`
+// 将上面Name: &quot;Reds&quot; =&gt; Name: &quot;&quot;
+// output, 由于使用了omitempty选项，MyName字段被忽略掉
+// {&quot;ID&quot;:1,&quot;Colors&quot;:[&quot;Crimson&quot;,&quot;Red&quot;,&quot;Ruby&quot;,&quot;Maroon&quot;]}
+
+// Field appears in JSON as key &quot;Field&quot; (the default), but
+// the field is skipped if empty.
+// Note the leading comma.
+Name string `json:&quot;,omitempty&quot;`
+// 将上面Name: &quot;Reds&quot; =&gt; Name: &quot;&quot;
+//{&quot;ID&quot;:1,&quot;Colors&quot;:[&quot;Crimson&quot;,&quot;Red&quot;,&quot;Ruby&quot;,&quot;Maroon&quot;]}
+
+
+// Field is ignored by this package.
+//忽略字段
+Name string `json:&quot;-&quot;`
+// {&quot;ID&quot;:1,&quot;Colors&quot;:[&quot;Crimson&quot;,&quot;Red&quot;,&quot;Ruby&quot;,&quot;Maroon&quot;]}
+
+// Field appears in JSON as key &quot;-&quot;.
+Name string `json:&quot;-,&quot;`
+// {&quot;ID&quot;:1,&quot;-&quot;:&quot;Reds&quot;,&quot;Colors&quot;:[&quot;Crimson&quot;,&quot;Red&quot;,&quot;Ruby&quot;,&quot;Maroon&quot;]}
+</code></pre><p>The “string” option signals that a field is stored as JSON inside a JSON-encoded string. It applies only to fields of string, floating point, integer, or boolean types. This extra level of encoding is sometimes used when communicating with JavaScript programs:</p>
+<p>“string”选项表示字段在JSON编码的字符串中存储为JSON。 它仅适用于字符串，浮点，整数或布尔类型的字段。 在与JavaScript程序通信时，有时会使用这种额外的编码级别：</p>
+<pre><code>ID int `json:&quot;,string&quot;`
+//仍然使用上面的例子
+// 可以看到ID转为&quot;1&quot;
+//{&quot;ID&quot;:&quot;1&quot;,&quot;Name&quot;:&quot;Reds&quot;,&quot;Colors&quot;:[&quot;Crimson&quot;,&quot;Red&quot;,&quot;Ruby&quot;,&quot;Maroon&quot;]}
+</code></pre><p>The key name will be used if it’s a non-empty string consisting of only Unicode letters, digits, and ASCII punctuation except quotation marks, backslash, and comma.</p>
+<p>如果字段名称是只包含Unicode字母，数字和ASCII标点符号（引号，反斜杠和逗号除外） 的非空字符串，则该字段名将被使用</p>
+<p>Anonymous struct fields are usually marshaled as if their inner exported fields were fields in the outer struct, subject to the usual Go visibility rules amended as described in the next paragraph.An anonymous struct field with a name given in its JSON tag is treated as having that name, rather than being anonymous.An anonymous struct field of interface type is treated the same as having that type as its name, rather than being anonymous</p>
+<p>匿名结构体字段通常会被编码，就好像它们内部导出的字段是外部结构中的字段一样，受到通常的Go可见性规则的限制，如下一段所述。在其JSON标记中给出名称的匿名结构字段被视为具有该名称，而不是匿名。 接口类型的匿名结构字段的处理方式与将该类型作为其名称相同，而不是匿名。</p>
+<pre><code>//将上面的例子改造一下，ColorGroup 增加一个匿名结构体 Rgb
+
+type Rgb struct {
+    R, G, B int
+}
+
+type ColorGroup struct {
+        ID     int `json:&quot;,string&quot;`
+        Name   string
+        Colors []string
+        Rgb // 匿名结构体
+}
+group := ColorGroup{
+        1,
+        &quot;Reds&quot;,
+        []string{&quot;Crimson&quot;, &quot;Red&quot;, &quot;Ruby&quot;, &quot;Maroon&quot;},
+        Rgb{50, 50, 50},
+}
+
+// output
+//{&quot;ID&quot;:&quot;1&quot;,&quot;Name&quot;:&quot;Reds&quot;,&quot;Colors&quot;:[&quot;Crimson&quot;,&quot;Red&quot;,&quot;Ruby&quot;,&quot;Maroon&quot;],&quot;R&quot;:50,&quot;G&quot;:50,&quot;B&quot;:50}
+
+type ColorGroup struct {
+        ID     int `json:&quot;,string&quot;`
+        Name   string
+        Colors []string
+        Rgb `json:&quot;rgb&quot;` // json 重命名选项 
+}
+// {&quot;ID&quot;:&quot;1&quot;,&quot;Name&quot;:&quot;Reds&quot;,&quot;Colors&quot;:[&quot;Crimson&quot;,&quot;Red&quot;,&quot;Ruby&quot;,&quot;Maroon&quot;],&quot;rgb&quot;:{&quot;R&quot;:50,&quot;G&quot;:50,&quot;B&quot;:50}}
+</code></pre><p>The Go visibility rules for struct fields are amended for JSON when deciding which field to marshal or unmarshal. If there are multiple fields at the same level, and that level is the least nested (and would therefore be the nesting level selected by the usual Go rules), the following extra rules apply:</p>
+</div><script type="text/javascript" src="/js/share.js?v=0.0.0" async></script><a data-url="http://www.zhengwenkai.com/2019/09/06/golang_json/" data-id="ck07ofd9o0000bmsmmxmc3oh6" class="article-share-link">Share</a><div class="tags"></div><div class="post-nav"><a href="/2019/08/02/nodejs_path_resolve/" class="next">NodeJS--path.resolve</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" class="search-form"><input type="text" name="q" maxlength="20" placeholder="Search"><input type="hidden" name="sitesearch" value="http://www.zhengwenkai.com"></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> Categories</i></div></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> Tags</i></div><div class="tagcloud"></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> Recent</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/09/06/golang_json/">encoding/json -- 标准库中的包</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/02/nodejs_path_resolve/">NodeJS--path.resolve</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/07/12/webRTC/">WebRTC学习</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/21/aws_ss/">aws以及shadowsocket</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/01/zsh_install/">手动安装zsh</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/27/create_blog/">使用hexo生成blog</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> Links</i></div><ul></ul><a href="http://www.example1.com/" title="site-name1" target="_blank">site-name1</a><ul></ul><a href="http://www.example2.com/" title="site-name2" target="_blank">site-name2</a><ul></ul><a href="http://www.example3.com/" title="site-name3" target="_blank">site-name3</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">口阿岂几的blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a id="rocket" href="#top" class="show"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/3.0.47/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/3.0.47/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
