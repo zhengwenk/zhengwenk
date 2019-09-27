@@ -1,0 +1,236 @@
+<!DOCTYPE HTML>
+<html class="no-js" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <!--[if lte IE 9]>
+<meta http-equiv="refresh" content="0;url=https://www.zhengwenkai.com/warn.html">
+<![endif]-->
+<meta charset="utf-8">
+<meta http-equiv="X-DNS-Prefetch-Control" content="on">
+<link rel="dns-prefetch" href="https://www.zhengwenkai.com">
+<link rel="dns-prefetch" href="//www.google-analytics.com">
+<link rel="prefetch" href="https://www.zhengwenkai.com">
+<link rel="prefetch" href="//www.google-analytics.com">
+
+
+<link rel="prerender" href="https://www.zhengwenkai.com">
+
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta name="renderer" content="webkit">
+<meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+<meta http-equiv="mobile-agent" content="format=html5; url=https://www.zhengwenkai.com">
+<meta name="author" content="口阿岂几(https://www.zhengwenkai.com)">
+<link rel="stylesheet" href="/css/JSimple.css">
+
+<link rel="shortcut icon" href="/images/favicon.png">
+
+
+<title>golang http包 - 啊凯说</title>
+
+<meta name="keywords" content="golang http">
+
+<meta name="description " content="golang http包源码翻译">
+
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+                processEscapes: true
+            }
+        });
+    </script>
+
+
+    
+
+    
+
+</head>
+<body>
+<div id="nav">
+    <nav class="nav-menu">
+        <a class="site-name current" href="/" title="懒写">懒写</a>
+        <a class="site-index current" href="/"><i class="fa fa-home"></i><span>首页</span></a>
+        <a href="/archives" title="归档"><i class="fa fa-archives"></i><span>归档</span></a>
+        <a href="/tags" title="标签"><i class="fa fa-tags"></i><span>标签</span></a>
+        <!-- custom single page of menus -->
+        
+    </nav>
+</div>
+
+<div class="nav-user">
+    <a class="btn-search" href="#"><i class="fa fa-search"></i></a>
+    <a class="btn-read-mode" href="#"><i class="fa fa-sun-o"></i></a>
+    <a class="btn-sns-qr" href="javascript:"><i class="fa fa-telegram"></i></a>
+</div>
+
+<div id="wrapper" class="clearfix">
+    <div id="body">
+        <div class="main" id="main">
+            <div id="cover">
+    <div class="cover-img"></div>
+    <div class="cover-info">
+        
+        <h1 class="cover-siteName">懒人写字</h1>
+        <h3 class="cover-siteTitle">望京的早晨</h3>
+        <p class="cover-siteDesc">望京的早晨</p>
+        <div class="cover-sns">
+            
+
+        </div>
+    </div>
+</div>
+
+            <div class="page-title">
+    <ul>
+        <li><a href="/">最近</a></li>
+        
+            
+                <li class="active">
+                    <a href="/categories/tech-notes" data-name="技术">技术</a>
+                </li>
+            
+                <li class>
+                    <a href="/categories/humanities" data-name="人文">人文</a>
+                </li>
+            
+                <li class>
+                    <a href="/categories/others" data-name="其他">其他</a>
+                </li>
+            
+        
+        <li class="page-search">
+    <form id="search" class="search-form">
+        <input type="text" readonly="readonly" id="local-search-input-tip" placeholder="读物检索~">
+        <button type="button" disabled="disabled" class="search-form-submit"><i class="fa fa-search"></i></button>
+    </form>
+</li>
+
+    </ul>
+</div>
+<div class="main-inner">
+    <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+        <div class="post-header">
+            <div class="post-author clearfix">
+                <a class="avatar fleft" href="https://www.zhengwenkai.com" target="_blank">
+                    <img width="48" src="/images/favicon.png" alt="avatar">
+                </a>
+                <p><span class="label">作者</span>
+                    <a href="https://www.zhengwenkai.com" target="_blank">口阿岂几</a>
+                    <span title="最后编辑于&nbsp;2019-09-11">2019-09-11</span>
+                </p>
+                <p>一个写着写着就越来越多的blog</p>
+            </div>
+            <h2 class="post-title">Golang Http包</h2>
+            <div class="post-meta">
+                本文共计12348个字 |
+                您是第&nbsp;<span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span>位看到它们的小伙伴
+            </div>
+        </div>
+        <div class="post-content markdown-body">
+            <h1 id="http包"><a href="#http包" class="headerlink" title="http包"></a>http包</h1><p>Package http</p>
+<p>使用</p>
+<pre><code>import &quot;net/http&quot;
+</code></pre><p><em>Package http provides HTTP client and server implementations.</em></p>
+<p><strong><em>http包提供http客户端和服务端的实现</em></strong></p>
+<p><em>ListenAndServe starts an HTTP server with a given address and handler. </em></p>
+<p><strong><em>ListenAndServe方法使用一个地址和处理函数启动一个http服务</em></strong></p>
+<p><em>The handler is usually nil, which means to use DefaultServeMux. </em></p>
+<p><strong><em>handler通常是nil，这意味者使用DefaultServeMux</em></strong></p>
+<p><em>Handle and HandleFunc add handlers to DefaultServeMux:</em></p>
+<p><strong><em>Handle 和 HandleFunc 方法可以添加handlers到DefaultServeMux</em></strong></p>
+<h3 id="Handle-和-HandleFunc-的使用"><a href="#Handle-和-HandleFunc-的使用" class="headerlink" title="Handle 和 HandleFunc 的使用"></a>Handle 和 HandleFunc 的使用</h3><figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Handle 和 HandleFunc 的使用</span></span><br><span class="line">http.Handle(<span class="string">"/foo"</span>, fooHandler)</span><br><span class="line">    </span><br><span class="line">http.HandleFunc(<span class="string">"/bar"</span>, func(w http<span class="selector-class">.ResponseWriter</span>, r *http.Request) &#123;</span><br><span class="line">    fmt.Fprintf(w, <span class="string">"Hello, %q"</span>, <span class="selector-tag">html</span>.EscapeString(r<span class="selector-class">.URL</span><span class="selector-class">.Path</span>))</span><br><span class="line">&#125;)</span><br><span class="line">    </span><br><span class="line">log.Fatal(http.ListenAndServe(<span class="string">":8080"</span>, nil))</span><br></pre></td></tr></table></figure>
+<h3 id="ListenAndServe-函数"><a href="#ListenAndServe-函数" class="headerlink" title="ListenAndServe 函数"></a>ListenAndServe 函数</h3><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">package http</span><br><span class="line">  </span><br><span class="line">  // server.go </span><br><span class="line">  </span><br><span class="line">  // ListenAndServe listens on the TCP network address addr and then calls</span><br><span class="line">  // ListenAndServe方法 监听TCP网络地址 addr(传入参数) 然后调用</span><br><span class="line">  // Serve <span class="keyword">with</span> <span class="keyword">handler</span> <span class="keyword">to</span> handle requests <span class="keyword">on</span> incoming connections.</span><br><span class="line">  // Serve绑定的<span class="keyword">handler</span>处理连接上的请求。</span><br><span class="line">  // Accepted connections <span class="keyword">are</span> configured <span class="keyword">to</span> <span class="keyword">enable</span> TCP <span class="keyword">keep</span>-alives.</span><br><span class="line">  // 接到的连接被配置为启用 TCP <span class="keyword">keep</span>-alives</span><br><span class="line">  // The <span class="keyword">handler</span> <span class="keyword">is</span> typically nil, <span class="keyword">in</span> which <span class="keyword">case</span> the DefaultServeMux <span class="keyword">is</span> used.</span><br><span class="line">  // 处理程序通常为nil，在这种情况下使用DefaultServeMux</span><br><span class="line">  // ListenAndServe <span class="keyword">always</span> <span class="keyword">returns</span> a non-nil error.</span><br><span class="line">  func ListenAndServe(addr <span class="keyword">string</span>, <span class="keyword">handler</span> <span class="keyword">Handler</span>) <span class="keyword">error</span> &#123;</span><br><span class="line">  	<span class="keyword">server</span> := &amp;<span class="keyword">Server</span>&#123;Addr: addr, <span class="keyword">Handler</span>: <span class="keyword">handler</span>&#125;</span><br><span class="line">  	<span class="keyword">return</span> server.ListenAndServe()</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  // server.ListenAndServe</span><br><span class="line">  // ListenAndServe listens <span class="keyword">on</span> the TCP network address srv.Addr <span class="keyword">and</span> <span class="keyword">then</span></span><br><span class="line">  // calls Serve <span class="keyword">to</span> handle requests <span class="keyword">on</span> incoming connections.</span><br><span class="line">  // Accepted connections <span class="keyword">are</span> configured <span class="keyword">to</span> <span class="keyword">enable</span> TCP <span class="keyword">keep</span>-alives.</span><br><span class="line">  //</span><br><span class="line">  // <span class="keyword">If</span> srv.Addr <span class="keyword">is</span> blank, <span class="string">":http"</span> <span class="keyword">is</span> used.</span><br><span class="line">  // 如果srv.Addr为空，默认使用 <span class="string">":http"</span></span><br><span class="line">  //</span><br><span class="line">  // ListenAndServe <span class="keyword">always</span> <span class="keyword">returns</span> a non-nil error. <span class="keyword">After</span> <span class="keyword">Shutdown</span> <span class="keyword">or</span> <span class="keyword">Close</span>,</span><br><span class="line">  // ListenAndServe 方法始终返回一个非nil的<span class="keyword">error</span>，<span class="keyword">Shutdown</span> <span class="keyword">or</span> <span class="keyword">Close</span> 后</span><br><span class="line">  // the returned <span class="keyword">error</span> <span class="keyword">is</span> ErrServerClosed.</span><br><span class="line">  // 被返回的<span class="keyword">error</span>是 ErrServerClosed</span><br><span class="line">  func (srv *<span class="keyword">Server</span>) ListenAndServe() <span class="keyword">error</span> &#123;</span><br><span class="line">  	<span class="keyword">if</span> srv.shuttingDown() &#123;</span><br><span class="line">  		<span class="keyword">return</span> ErrServerClosed</span><br><span class="line">  	&#125;</span><br><span class="line">  	addr := srv.Addr</span><br><span class="line">  	<span class="keyword">if</span> addr == <span class="string">""</span> &#123;</span><br><span class="line">  		addr = <span class="string">":http"</span></span><br><span class="line">  	&#125;</span><br><span class="line">  </span><br><span class="line">  	// 监听tcp</span><br><span class="line">  	<span class="keyword">ln</span>, err := net.Listen(<span class="string">"tcp"</span>, addr)</span><br><span class="line">  </span><br><span class="line">  	<span class="keyword">if</span> err != nil &#123;</span><br><span class="line">  		<span class="keyword">return</span> err</span><br><span class="line">  	&#125;</span><br><span class="line">    // 调用 Serve处理请求</span><br><span class="line">  	<span class="keyword">return</span> srv.Serve(tcpKeepAliveListener&#123;ln.(*net.TCPListener)&#125;)</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Server-Serve"><a href="#Server-Serve" class="headerlink" title="Server.Serve"></a>Server.Serve</h3><figure class="highlight go"><table><tr><td class="code"><pre><span class="line">  <span class="comment">// Serve accepts incoming connections on the Listener l, creating a</span></span><br><span class="line">  <span class="comment">// new service goroutine for each. The service goroutines read requests and</span></span><br><span class="line">  <span class="comment">// then call srv.Handler to reply to them.</span></span><br><span class="line">  <span class="comment">// Serve方法接受 Listener l (监听者)传入的连接，为每个连接创建一个新的service goroutine</span></span><br><span class="line">  <span class="comment">// service goroutine读取请求并调用srv.Handler方法处理请求并响应</span></span><br><span class="line">  <span class="comment">// HTTP/2 support is only enabled if the Listener returns *tls.Conn</span></span><br><span class="line">  <span class="comment">// connections and they were configured with "h2" in the TLS</span></span><br><span class="line">  <span class="comment">// Config.NextProtos.</span></span><br><span class="line">  <span class="comment">// 只有Listener returns *tls.Conn connections 并且他们 在TLS</span></span><br><span class="line">  <span class="comment">// Config.NextProtos 被配置为 "h2"</span></span><br><span class="line">  <span class="comment">// Serve always returns a non-nil error and closes l.</span></span><br><span class="line">  <span class="comment">// After Shutdown or Close, the returned error is ErrServerClosed.</span></span><br><span class="line">  <span class="function"><span class="keyword">func</span> <span class="params">(srv *Server)</span> <span class="title">Serve</span><span class="params">(l net.Listener)</span> <span class="title">error</span></span> &#123;</span><br><span class="line"><span class="keyword">if</span> fn := testHookServerServe; fn != <span class="literal">nil</span> &#123;</span><br><span class="line">  		fn(srv, l) <span class="comment">// call hook with unwrapped listener</span></span><br><span class="line">  	&#125;</span><br><span class="line">  	</span><br><span class="line">  	<span class="comment">//onceCloseListener wraps a net.Listener, protecting it from multiple Close calls.</span></span><br><span class="line">     <span class="comment">//onceCloseListener 是对net.Listener 封装，用以防止多次close的调用.</span></span><br><span class="line">  	l = &amp;onceCloseListener&#123;Listener: l&#125;</span><br><span class="line">  	<span class="keyword">defer</span> l.Close()</span><br><span class="line">  	</span><br><span class="line">     <span class="comment">// 启动http2 (具体代码暂不分析)</span></span><br><span class="line">  	<span class="keyword">if</span> err := srv.setupHTTP2_Serve(); err != <span class="literal">nil</span> &#123;</span><br><span class="line">  		<span class="keyword">return</span> err</span><br><span class="line">  	&#125;</span><br><span class="line">  </span><br><span class="line">  	<span class="keyword">if</span> !srv.trackListener(&amp;l, <span class="literal">true</span>) &#123;</span><br><span class="line">  		<span class="keyword">return</span> ErrServerClosed</span><br><span class="line">  	&#125;</span><br><span class="line">  	<span class="keyword">defer</span> srv.trackListener(&amp;l, <span class="literal">false</span>)</span><br><span class="line">  </span><br><span class="line">  	<span class="keyword">var</span> tempDelay time.Duration     </span><br><span class="line">  </span><br><span class="line">  	<span class="comment">// 一个是Background，主要用于main函数、初始化以及测试代码中，</span></span><br><span class="line">    <span class="comment">// 作为Context这个树结构的最顶层的Context，也就是根Context，它不能被取消。</span></span><br><span class="line">  	baseCtx := context.Background() <span class="comment">// base is always background, per Issue 16220</span></span><br><span class="line">  	ctx := context.WithValue(baseCtx, ServerContextKey, srv)</span><br><span class="line">    <span class="comment">// 核心循环</span></span><br><span class="line">  	<span class="keyword">for</span> &#123;</span><br><span class="line">      <span class="comment">// Accept waits for and returns the next connection to the listener.</span></span><br><span class="line">      <span class="comment">// Accept() (Conn, error)</span></span><br><span class="line">  		rw, e := l.Accept()</span><br><span class="line">  		<span class="keyword">if</span> e != <span class="literal">nil</span> &#123;</span><br><span class="line">  			<span class="comment">// Go 语言中提供了 select 关键字，可以同时响应多个通道的操作。</span></span><br><span class="line">          	<span class="comment">// select 的每个 case 都会对应一个通道的收发过程。</span></span><br><span class="line">  			<span class="comment">//当收发完成时，就会触发 case 中响应的语句。</span></span><br><span class="line">      		<span class="comment">//多个操作在每次 select 中挑选一个进行响应。</span></span><br><span class="line">  			<span class="keyword">select</span> &#123;</span><br><span class="line">  				<span class="keyword">case</span> &lt;-srv.getDoneChan():</span><br><span class="line">  					<span class="keyword">return</span> ErrServerClosed</span><br><span class="line">  				</span><br><span class="line">  				<span class="keyword">default</span>:</span><br><span class="line">  			&#125;</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">  			<span class="keyword">if</span> ne, ok := e.(net.Error); ok &amp;&amp; ne.Temporary() &#123;</span><br><span class="line">  				<span class="keyword">if</span> tempDelay == <span class="number">0</span> &#123;</span><br><span class="line">  					tempDelay = <span class="number">5</span> * time.Millisecond</span><br><span class="line">  				&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  					tempDelay *= <span class="number">2</span></span><br><span class="line">  				&#125;</span><br><span class="line">  				<span class="keyword">if</span> max := <span class="number">1</span> * time.Second; tempDelay &gt; max &#123;</span><br><span class="line">  					tempDelay = max</span><br><span class="line">  				&#125;</span><br><span class="line">  				srv.logf(<span class="string">"http: Accept error: %v; retrying in %v"</span>, e, tempDelay)</span><br><span class="line">  				time.Sleep(tempDelay)</span><br><span class="line">  				<span class="keyword">continue</span></span><br><span class="line">  			&#125;</span><br><span class="line">  			<span class="keyword">return</span> e</span><br><span class="line">  		&#125;</span><br><span class="line">  		tempDelay = <span class="number">0</span></span><br><span class="line">  </span><br><span class="line">      <span class="comment">// Create new connection from rwc.</span></span><br><span class="line">  		c := srv.newConn(rw)</span><br><span class="line">  		c.setState(c.rwc, StateNew) <span class="comment">// before Serve can return</span></span><br><span class="line">      </span><br><span class="line">      <span class="comment">// Go 程序中使用 go 关键字为一个函数创建一个 goroutine。</span></span><br><span class="line">      <span class="comment">//  一个函数可以被创建多个 goroutine，一个 goroutine 必定对应一个函数。</span></span><br><span class="line">      <span class="comment">// Serve a new connection</span></span><br><span class="line">  		<span class="keyword">go</span> c.serve(ctx)</span><br><span class="line">  		<span class="comment">// Go 为了实现高并发和高性能，使用了 goroutines 来处理 Conn 的读写事件，</span></span><br><span class="line">  		<span class="comment">// 这样每个请求都能保持独立，相互不会阻塞，可以高效的响应网络事件。</span></span><br><span class="line">  		<span class="comment">// 这是 Go 高效的保证。</span></span><br><span class="line">  	&#125;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="function"><span class="keyword">func</span> <span class="params">(c *conn)</span> <span class="title">serve</span><span class="params">(ctx context.Context)</span></span> &#123;</span><br><span class="line">  	...</span><br><span class="line">  	<span class="comment">// serverHandler delegates to either the server's Handler or</span></span><br><span class="line">  	<span class="comment">// DefaultServeMux and also handles "OPTIONS *" requests.</span></span><br><span class="line">  	serverHandler&#123;c.server&#125;.ServeHTTP(w, w.req)</span><br><span class="line">  </span><br><span class="line">    ...</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  ...</span><br><span class="line">  <span class="keyword">type</span> ServeMux <span class="keyword">struct</span> &#123;</span><br><span class="line">  	mu    sync.RWMutex</span><br><span class="line">  	m     <span class="keyword">map</span>[<span class="keyword">string</span>]muxEntry</span><br><span class="line">  	es    []muxEntry <span class="comment">// slice of entries sorted from longest to shortest.</span></span><br><span class="line">  	hosts <span class="keyword">bool</span>       <span class="comment">// whether any patterns contain hostnames</span></span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">   <span class="comment">// DefaultServeMux is the default ServeMux used by Serve.</span></span><br><span class="line">   <span class="keyword">var</span> DefaultServeMux = &amp;defaultServeMux</span><br><span class="line">   <span class="keyword">var</span> defaultServeMux ServeMux</span><br><span class="line">  ...</span><br><span class="line">  </span><br><span class="line">  <span class="function"><span class="keyword">func</span> <span class="params">(sh serverHandler)</span> <span class="title">ServeHTTP</span><span class="params">(rw ResponseWriter, req *Request)</span></span> &#123;</span><br><span class="line">  	handler := sh.srv.Handler</span><br><span class="line">  	<span class="comment">// 这里handler是通过 http.ListenAndServe 方法传入的 nil, 所以会被赋默认值</span></span><br><span class="line">  	<span class="keyword">if</span> handler == <span class="literal">nil</span> &#123;</span><br><span class="line">  		handler = DefaultServeMux</span><br><span class="line">  	&#125;</span><br><span class="line">  	<span class="comment">// 2种特殊请求 单独处理</span></span><br><span class="line">  	<span class="keyword">if</span> req.RequestURI == <span class="string">"*"</span> &amp;&amp; req.Method == <span class="string">"OPTIONS"</span> &#123;</span><br><span class="line">  		handler = globalOptionsHandler&#123;&#125;</span><br><span class="line">  	&#125;</span><br><span class="line">    </span><br><span class="line">  	handler.ServeHTTP(rw, req)</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="function"><span class="keyword">func</span> <span class="params">(mux *ServeMux)</span> <span class="title">ServeHTTP</span><span class="params">(w ResponseWriter, r *Request)</span></span> &#123;</span><br><span class="line">  	<span class="keyword">if</span> r.RequestURI == <span class="string">"*"</span> &#123;</span><br><span class="line">  		<span class="comment">// 判断http的版本是否至少是1.1</span></span><br><span class="line">  		<span class="keyword">if</span> r.ProtoAtLeast(<span class="number">1</span>, <span class="number">1</span>) &#123;</span><br><span class="line">  			w.Header().Set(<span class="string">"Connection"</span>, <span class="string">"close"</span>)</span><br><span class="line">  		&#125;</span><br><span class="line">  		w.WriteHeader(StatusBadRequest)</span><br><span class="line">  		<span class="keyword">return</span></span><br><span class="line">  	&#125;</span><br><span class="line">  	</span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">  	h, _ := mux.Handler(r)</span><br><span class="line">  	h.ServeHTTP(w, r)</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="function"><span class="keyword">func</span> <span class="params">(mux *ServeMux)</span> <span class="title">Handler</span><span class="params">(r *Request)</span> <span class="params">(h Handler, pattern <span class="keyword">string</span>)</span></span> &#123;</span><br><span class="line">  </span><br><span class="line">  	<span class="comment">// CONNECT requests are not canonicalized.</span></span><br><span class="line">    <span class="comment">// CONNECT 请求不是一个标准请求，</span></span><br><span class="line">  	<span class="keyword">if</span> r.Method == <span class="string">"CONNECT"</span> &#123;</span><br><span class="line">  		<span class="comment">// If r.URL.Path is /tree and its handler is not registered,</span></span><br><span class="line">      <span class="comment">// 假设 r.URL.Path is == "/tree" 并且 handler 没有被注册</span></span><br><span class="line">  		<span class="comment">// the /tree -&gt; /tree/ redirect applies to CONNECT requests</span></span><br><span class="line">      <span class="comment">// /tree -&gt; /tree/ 的重定向会被用于 CONNECT 的请求</span></span><br><span class="line">  		<span class="comment">// but the path canonicalization does not.</span></span><br><span class="line">  		<span class="keyword">if</span> u, ok := mux.redirectToPathSlash(r.URL.Host, r.URL.Path, r.URL); ok &#123;</span><br><span class="line">  			<span class="comment">// 301 重定向</span></span><br><span class="line">  			<span class="keyword">return</span> RedirectHandler(u.String(), StatusMovedPermanently), u.Path</span><br><span class="line">  		&#125;</span><br><span class="line">  </span><br><span class="line">  		<span class="keyword">return</span> mux.handler(r.Host, r.URL.Path)</span><br><span class="line">  	&#125;</span><br><span class="line">  </span><br><span class="line">  	<span class="comment">// All other requests have any port stripped and path cleaned</span></span><br><span class="line">  	<span class="comment">// before passing to mux.handler.</span></span><br><span class="line">  	<span class="comment">// 在通过mux.handler之前 所有其他的请求 r.Host含有port的部分会被清除</span></span><br><span class="line">    <span class="comment">// path会被清洗</span></span><br><span class="line">  	host := stripHostPort(r.Host)</span><br><span class="line">  	path := cleanPath(r.URL.Path)</span><br><span class="line">  </span><br><span class="line">  	<span class="comment">// If the given path is /tree and its handler is not registered,</span></span><br><span class="line">  	<span class="comment">// redirect for /tree/.</span></span><br><span class="line">  	<span class="keyword">if</span> u, ok := mux.redirectToPathSlash(host, path, r.URL); ok &#123;</span><br><span class="line">  		<span class="keyword">return</span> RedirectHandler(u.String(), StatusMovedPermanently), u.Path</span><br><span class="line">  	&#125;</span><br><span class="line">  </span><br><span class="line">  	<span class="keyword">if</span> path != r.URL.Path &#123;</span><br><span class="line">  		_, pattern = mux.handler(host, path)</span><br><span class="line">  		url := *r.URL</span><br><span class="line">  		url.Path = path</span><br><span class="line">  		<span class="keyword">return</span> RedirectHandler(url.String(), StatusMovedPermanently), pattern</span><br><span class="line">  	&#125;</span><br><span class="line">  </span><br><span class="line">  	<span class="keyword">return</span> mux.handler(host, r.URL.Path)</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  </span><br><span class="line">  <span class="comment">// redirectToPathSlash determines if the given path needs appending "/" to it.</span></span><br><span class="line">  <span class="comment">// 该方法确定被给的path是否需要追加 "/"</span></span><br><span class="line">  <span class="comment">// This occurs when a handler for path + "/" was already registered, but</span></span><br><span class="line">  <span class="comment">// not for path itself. If the path needs appending to, it creates a new</span></span><br><span class="line">  <span class="comment">// URL, setting the path to u.Path + "/" and returning true to indicate so.</span></span><br><span class="line">  <span class="comment">// 当一个 处理 path + "/" handler 被注册, 而不是 path 本身。如果path需要被追加，</span></span><br><span class="line">  <span class="comment">// 则会创建一个新的url，设置path= u.Path + "/", 并返回true来表示</span></span><br><span class="line">  <span class="function"><span class="keyword">func</span> <span class="params">(mux *ServeMux)</span> <span class="title">redirectToPathSlash</span><span class="params">(host, path <span class="keyword">string</span>, u *url.URL)</span> <span class="params">(*url.URL, <span class="keyword">bool</span>)</span></span> &#123;</span><br><span class="line">  	mux.mu.RLock()</span><br><span class="line">  	shouldRedirect := mux.shouldRedirectRLocked(host, path)</span><br><span class="line">  	mux.mu.RUnlock()</span><br><span class="line">  	<span class="keyword">if</span> !shouldRedirect &#123;</span><br><span class="line">  		<span class="keyword">return</span> u, <span class="literal">false</span></span><br><span class="line">  	&#125;</span><br><span class="line">  	path = path + <span class="string">"/"</span></span><br><span class="line">  	u = &amp;url.URL&#123;Path: path, RawQuery: u.RawQuery&#125;</span><br><span class="line">  	<span class="keyword">return</span> u, <span class="literal">true</span></span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="function"><span class="keyword">func</span> <span class="params">(mux *ServeMux)</span> <span class="title">shouldRedirectRLocked</span><span class="params">(host, path <span class="keyword">string</span>)</span> <span class="title">bool</span></span> &#123;</span><br><span class="line">  	p := []<span class="keyword">string</span>&#123;path, host + path&#125;</span><br><span class="line">  </span><br><span class="line">  	<span class="keyword">for</span> _, c := <span class="keyword">range</span> p &#123;</span><br><span class="line">  		<span class="comment">// 判断path 是否被定义在mux.m中，存在返回true </span></span><br><span class="line">  		<span class="keyword">if</span> _, exist := mux.m[c]; exist &#123;</span><br><span class="line">  			<span class="comment">// 不需要改写</span></span><br><span class="line">  			<span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">  		&#125;</span><br><span class="line">  	&#125;</span><br><span class="line">  </span><br><span class="line">  	n := <span class="built_in">len</span>(path)</span><br><span class="line">  	<span class="keyword">if</span> n == <span class="number">0</span> &#123;</span><br><span class="line">  		<span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">  	&#125;</span><br><span class="line">  	<span class="keyword">for</span> _, c := <span class="keyword">range</span> p &#123;</span><br><span class="line">  		<span class="keyword">if</span> _, exist := mux.m[c+<span class="string">"/"</span>]; exist &#123;</span><br><span class="line">  			<span class="keyword">return</span> path[n<span class="number">-1</span>] != <span class="string">'/'</span></span><br><span class="line">  		&#125;</span><br><span class="line">  	&#125;</span><br><span class="line">  </span><br><span class="line">  	<span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  </span><br><span class="line">  <span class="comment">// handler is the main implementation of Handler.</span></span><br><span class="line">  <span class="comment">// handler是Handler的主要实现</span></span><br><span class="line">  <span class="comment">// The path is known to be in canonical form, except for CONNECT methods.</span></span><br><span class="line">  <span class="comment">// 除了CONNECT方法之外 path已经是规范形式的。</span></span><br><span class="line">  <span class="function"><span class="keyword">func</span> <span class="params">(mux *ServeMux)</span> <span class="title">handler</span><span class="params">(host, path <span class="keyword">string</span>)</span> <span class="params">(h Handler, pattern <span class="keyword">string</span>)</span></span> &#123;</span><br><span class="line">  	<span class="comment">// 由于请求涉及到并发处理，因此这里需要一个锁机制</span></span><br><span class="line">  	mux.mu.RLock()</span><br><span class="line">  	<span class="keyword">defer</span> mux.mu.RUnlock()</span><br><span class="line">  </span><br><span class="line">  	<span class="comment">// Host-specific pattern takes precedence over generic ones</span></span><br><span class="line">  	<span class="comment">// 特殊的host 匹配会优先覆盖一般的。</span></span><br><span class="line">  	<span class="comment">// 主要是处理多host服务的请求</span></span><br><span class="line">  	<span class="keyword">if</span> mux.hosts &#123;</span><br><span class="line">  		h, pattern = mux.match(host + path)</span><br><span class="line">  	&#125;</span><br><span class="line">  	<span class="keyword">if</span> h == <span class="literal">nil</span> &#123;</span><br><span class="line">  		h, pattern = mux.match(path)</span><br><span class="line">  	&#125;</span><br><span class="line">  	<span class="keyword">if</span> h == <span class="literal">nil</span> &#123;</span><br><span class="line">  		h, pattern = NotFoundHandler(), <span class="string">""</span></span><br><span class="line">  	&#125;</span><br><span class="line">  	<span class="keyword">return</span></span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// Find a handler on a handler map given a path string.</span></span><br><span class="line">  <span class="comment">// Most-specific (longest) pattern wins.</span></span><br><span class="line">  <span class="comment">// 匹配path 对应的handler</span></span><br><span class="line">  <span class="function"><span class="keyword">func</span> <span class="params">(mux *ServeMux)</span> <span class="title">match</span><span class="params">(path <span class="keyword">string</span>)</span> <span class="params">(h Handler, pattern <span class="keyword">string</span>)</span></span> &#123;</span><br><span class="line">  	<span class="comment">// Check for exact match first.</span></span><br><span class="line">    <span class="comment">// 精确匹配</span></span><br><span class="line">  	v, ok := mux.m[path]</span><br><span class="line">  	<span class="keyword">if</span> ok &#123;</span><br><span class="line">  		<span class="keyword">return</span> v.h, v.pattern</span><br><span class="line">  	&#125;</span><br><span class="line">  </span><br><span class="line">  	<span class="comment">// Check for longest valid match.  mux.es contains all patterns</span></span><br><span class="line">  	<span class="comment">// that end in / sorted from longest to shortest.</span></span><br><span class="line">  	<span class="comment">// 最长有效匹配， mux.es 包含所有 以 "/" 结尾的匹配 从长到短</span></span><br><span class="line">  	<span class="keyword">for</span> _, e := <span class="keyword">range</span> mux.es &#123;</span><br><span class="line">  		<span class="keyword">if</span> strings.HasPrefix(path, e.pattern) &#123;</span><br><span class="line">  			<span class="keyword">return</span> e.h, e.pattern</span><br><span class="line">  		&#125;</span><br><span class="line">  	&#125;</span><br><span class="line">  	<span class="keyword">return</span> <span class="literal">nil</span>, <span class="string">""</span></span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="net-Listen"><a href="#net-Listen" class="headerlink" title="net.Listen"></a>net.Listen</h3><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Listen announces on the local network address.</span></span><br><span class="line"><span class="comment">// 监听本地网络地址的通知</span></span><br><span class="line"><span class="comment">// The network must be "tcp", "tcp4", "tcp6", "unix" or "unixpacket".</span></span><br><span class="line"><span class="comment">// </span></span><br><span class="line"><span class="comment">// For TCP networks, if the host in the address parameter is empty or</span></span><br><span class="line"><span class="comment">// a literal unspecified IP address, Listen listens on all available</span></span><br><span class="line"><span class="comment">// unicast and anycast IP addresses of the local system.</span></span><br><span class="line"><span class="comment">// 对于tcp网络 如果address参数中的主机为空或者是一个子面未指定的ip地址，</span></span><br><span class="line"><span class="comment">// Listen方法监听所有可用的本地系统的单播和任波的ip地址</span></span><br><span class="line"><span class="comment">// To only use IPv4, use network "tcp4".</span></span><br><span class="line"><span class="comment">// 如果仅使用IPv4 network 可以使用 "tcp4"。</span></span><br><span class="line"><span class="comment">// The address can use a host name, but this is not recommended,</span></span><br><span class="line"><span class="comment">// address 可以使用host name，但是不推荐</span></span><br><span class="line"><span class="comment">// because it will create a listener for at most one of the host's IP</span></span><br><span class="line"><span class="comment">// addresses.</span></span><br><span class="line"><span class="comment">// 因为 这只会为最多一个主机的ip地址创建监听</span></span><br><span class="line"><span class="comment">// If the port in the address parameter is empty or "0", as in</span></span><br><span class="line"><span class="comment">// "127.0.0.1:" or "[::1]:0", a port number is automatically chosen.</span></span><br><span class="line"><span class="comment">// 如果address 参数中的port是空或者 "0", 例如 "127.0.0.1:" or "[::1]:0"</span></span><br><span class="line"><span class="comment">// 会自动选择一个端口</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// The Addr method of Listener can be used to discover the chosen</span></span><br><span class="line"><span class="comment">// port.</span></span><br><span class="line"><span class="comment">// Listener的Addr方法可以用于发现所选的端口</span></span><br><span class="line"><span class="comment">// See func Dial for a description of the network and address</span></span><br><span class="line"><span class="comment">// parameters.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Listen</span><span class="params">(network, address <span class="keyword">string</span>)</span> <span class="params">(Listener, error)</span></span> &#123;</span><br><span class="line">	<span class="keyword">var</span> lc ListenConfig</span><br><span class="line">	<span class="keyword">return</span> lc.Listen(context.Background(), network, address)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Context背景-和-适用场景"><a href="#Context背景-和-适用场景" class="headerlink" title="Context背景 和 适用场景"></a>Context背景 和 适用场景</h3><p>golang在1.6.2的时候还没有自己的context，在1.7的版本中就把</p>
+<p>golang.org/x/net/context包被加入到了官方的库中。</p>
+<p>golang 的 Context包，是专门用来简化对于处理单个请求的多个goroutine之间与请求域的数据、取消信号、截止时间等相关操作，这些操作可能涉及多个 API 调用。</p>
+<p>比如有一个网络请求Request，每个Request都需要开启一个goroutine做一些事情，这些goroutine又可能会开启其他的goroutine。这样的话， 我们就可以通过Context，来跟踪这些goroutine，并且通过Context来控制他们的目的，这就是Go语言为我们提供的Context，中文可以称之为“上下文”。</p>
+<p>另外一个实际例子是，在Go服务器程序中，每个请求都会有一个goroutine去处理。然而，处理程序往往还需要创建额外的goroutine去访问后端资源，比如数据库、RPC服务等。由于这些goroutine都是在处理同一个请求，所以它们往往需要访问一些共享的资源，比如用户身份信息、认证token、请求截止时间等。而且如果请求超时或者被取消后，所有的goroutine都应该马上退出并且释放相关的资源。这种情况也需要用Context来为我们取消掉所有goroutine</p>
+
+            
+                
+
+            
+        </div>
+        <div class="post-tool">
+            <a class="btn-thumbs-up" href="javascript:void(0);" data-cid="52" title="95">
+                <i class="fa fa-thumbs-up" aria-hidden="true"></i> 打赏
+            </a>
+        </div>
+        
+        <div class="post-tags">标签：
+            
+            <a href="/tags/golang/">golang</a>
+            
+        </div>
+        
+    </article>
+    
+        <p style="text-align: center">本文代表个人观点，内容仅供参考。若有不恰当之处，望不吝赐教！</p>
+    
+    
+    
+
+</div>
+<script src="/js/busuanzi.pure.mini.js"></script>
+
+
+        </div><!-- end #main-->
+    </div><!-- end #body -->
+    <footer class="footer">
+    <div class="footer-inner" style="text-align: center">
+        <p>
+            <a href="/about" title="关于">关于</a>&nbsp;&nbsp<em>·</em>&nbsp;&nbsp
+            <!-- 自定义链接 -->
+            <a href="/help" title="帮助">帮助</a>&nbsp;&nbsp<em>·</em>&nbsp;&nbsp
+            <a href="/links" title="友链">友链</a>&nbsp;&nbsp<em>·</em>&nbsp;&nbsp
+            <a href="/sitemap.xml" title="地图">地图</a>
+        </p>
+        <p>
+            本站已建立&nbsp<a href="/timeline" id="siteBuildingTime"></a>&nbsp天，<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="licence">采用知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议创作</a><br>
+            ©2017-<span id="cpYear"></span> 基于&nbsp<a href="http://hexo.io" target="_blank" rel="nofollow">Hexo</a>
+            ，主题采用&nbsp&nbsp<a href="https://github.com/tangkunyin/hexo-theme-jsimple" target="_blank" rel="bookmark">JSimple</a>
+            ，作者&nbsp<a href="https://www.zhengwenkai.com" target="_blank" rel="friend">口阿岂几</a>
+            ，Hosted by <a href="https://pages.github.com/" target="_blank" rel="nofollow">GitHub Pages</a>
+        </p>
+    </div>
+</footer>
+<script src="/js/SimpleCore.js"></script>
+
+</div>
+<!-- search pop -->
+<div class="popup search-popup local-search-popup">
+    <div class="local-search-header clearfix">
+        <span class="search-icon">
+            <i class="fa fa-search"></i>
+        </span>
+        <span class="popup-btn-close">
+            <i class="fa fa-times-circle"></i>
+        </span>
+        <div class="local-search-input-wrapper">
+            <input id="local-search-input" spellcheck="false" type="text" autocomplete="off" placeholder="请输入查询关键词">
+        </div>
+    </div>
+    <div id="local-search-result"></div>
+</div>
+<div class="fixed-btn">
+    <a class="btn-gotop" href="javascript:"> <i class="fa fa-angle-up"></i></a>
+</div>
+<script>
+    $(function () {
+        var jsi_config = {
+            buildingTime: '09/11/2018',
+            current: $('.post-tags').length > 0 ? 'post' : 'archive',
+            snsQRCode: '/images/sns-qrcode.png',
+            donateImg: '/images/donate-qr.png',
+            localSearch: { dbPath: '' },
+            readMode: 'day'
+        };
+        
+        SimpleCore.init(jsi_config);
+        
+    });
+</script>
+</body>
+</html>

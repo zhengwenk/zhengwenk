@@ -1,0 +1,346 @@
+<!DOCTYPE HTML>
+<html class="no-js" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <!--[if lte IE 9]>
+<meta http-equiv="refresh" content="0;url=https://www.zhengwenkai.com/warn.html">
+<![endif]-->
+<meta charset="utf-8">
+<meta http-equiv="X-DNS-Prefetch-Control" content="on">
+<link rel="dns-prefetch" href="https://www.zhengwenkai.com">
+<link rel="dns-prefetch" href="//www.google-analytics.com">
+<link rel="prefetch" href="https://www.zhengwenkai.com">
+<link rel="prefetch" href="//www.google-analytics.com">
+
+
+<link rel="prerender" href="https://www.zhengwenkai.com">
+
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta name="renderer" content="webkit">
+<meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+<meta http-equiv="mobile-agent" content="format=html5; url=https://www.zhengwenkai.com">
+<meta name="author" content="口阿岂几(https://www.zhengwenkai.com)">
+<link rel="stylesheet" href="/css/JSimple.css">
+
+<link rel="shortcut icon" href="/images/favicon.png">
+
+
+<title>golang encoding/json marshal方法 - 啊凯说</title>
+
+<meta name="keywords" content="golang json">
+
+<meta name="description " content="golang标准库 encoding/json 翻译">
+
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+                processEscapes: true
+            }
+        });
+    </script>
+
+
+    
+
+    
+
+</head>
+<body>
+<div id="nav">
+    <nav class="nav-menu">
+        <a class="site-name current" href="/" title="懒写">懒写</a>
+        <a class="site-index current" href="/"><i class="fa fa-home"></i><span>首页</span></a>
+        <a href="/archives" title="归档"><i class="fa fa-archives"></i><span>归档</span></a>
+        <a href="/tags" title="标签"><i class="fa fa-tags"></i><span>标签</span></a>
+        <!-- custom single page of menus -->
+        
+    </nav>
+</div>
+
+<div class="nav-user">
+    <a class="btn-search" href="#"><i class="fa fa-search"></i></a>
+    <a class="btn-read-mode" href="#"><i class="fa fa-sun-o"></i></a>
+    <a class="btn-sns-qr" href="javascript:"><i class="fa fa-telegram"></i></a>
+</div>
+
+<div id="wrapper" class="clearfix">
+    <div id="body">
+        <div class="main" id="main">
+            <div id="cover">
+    <div class="cover-img"></div>
+    <div class="cover-info">
+        
+        <h1 class="cover-siteName">懒人写字</h1>
+        <h3 class="cover-siteTitle">望京的早晨</h3>
+        <p class="cover-siteDesc">望京的早晨</p>
+        <div class="cover-sns">
+            
+
+        </div>
+    </div>
+</div>
+
+            <div class="page-title">
+    <ul>
+        <li><a href="/">最近</a></li>
+        
+            
+                <li class="active">
+                    <a href="/categories/tech-notes" data-name="技术">技术</a>
+                </li>
+            
+                <li class>
+                    <a href="/categories/humanities" data-name="人文">人文</a>
+                </li>
+            
+                <li class>
+                    <a href="/categories/others" data-name="其他">其他</a>
+                </li>
+            
+        
+        <li class="page-search">
+    <form id="search" class="search-form">
+        <input type="text" readonly="readonly" id="local-search-input-tip" placeholder="读物检索~">
+        <button type="button" disabled="disabled" class="search-form-submit"><i class="fa fa-search"></i></button>
+    </form>
+</li>
+
+    </ul>
+</div>
+<div class="main-inner">
+    <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+        <div class="post-header">
+            <div class="post-author clearfix">
+                <a class="avatar fleft" href="https://www.zhengwenkai.com" target="_blank">
+                    <img width="48" src="/images/favicon.png" alt="avatar">
+                </a>
+                <p><span class="label">作者</span>
+                    <a href="https://www.zhengwenkai.com" target="_blank">口阿岂几</a>
+                    <span title="最后编辑于&nbsp;2019-09-11">2019-09-11</span>
+                </p>
+                <p>一个写着写着就越来越多的blog</p>
+            </div>
+            <h2 class="post-title">Golang Encoding/json Marshal方法</h2>
+            <div class="post-meta">
+                本文共计7657个字 |
+                您是第&nbsp;<span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span>位看到它们的小伙伴
+            </div>
+        </div>
+        <div class="post-content markdown-body">
+            <h3 id="func-Marshal"><a href="#func-Marshal" class="headerlink" title="func Marshal"></a><strong>func Marshal</strong></h3><pre><code>func Marshal(v interface{}) ([]byte, error)
+</code></pre><p><strong>Marshal returns the JSON encoding of v.</strong></p>
+<p>Marshal traverses the value v recursively.<code>（Marshal 递归的遍历v值）</code></p>
+<p>If an encountered value implements the Marshaler interface and is not a nil pointer <code>（如果遇到一个实现Marshaler interface 并且不是一个空指针的值）</code>Marshal calls its MarshalJSON method to produce JSON.</p>
+<p>If no MarshalJSON method is present but the value implements encoding.TextMarshaler instead,<code>(如果不存在MarshalJSON 方法,但是value实现encoding.TextMarshaler)</code> Marshal calls its MarshalText method and encodes the result as a JSON string. <code>(则Marshal调用其MarshalText方法并将结果编码为JSON字符串)</code></p>
+<p>The nil pointer exception is not strictly necessary but mimics a similar, necessary exception in the behavior of UnmarshalJSON. <code>(空指针异常不是绝对必要的，但是在UnmarshalJSON方法的行为中模仿了类似的必要异常)</code></p>
+<p>Otherwise, Marshal uses the following type-dependent default encodings:</p>
+<p><code>另外Marshal 使用如下类型相关的默认编码</code></p>
+<p>Boolean values encode as JSON booleans.</p>
+<p>Floating point, integer, and Number values encode as JSON numbers.</p>
+<p>String values encode as JSON strings coerced to valid UTF-8, </p>
+<p><code>字符串值编码为强制为有效UTF-8的JSON字符串</code></p>
+<p>replacing invalid bytes with the Unicode replacement rune. </p>
+<p><code>用Unicode replacement rune替换无效的字节</code></p>
+<p>The angle brackets “&lt;” and “&gt;” are escaped to “\u003c” and “\u003e” to keep some browsers from misinterpreting JSON output as HTML. </p>
+<p><code>尖括号“&lt;”和“&gt;”被转义为“\ u003c”和“\ u003e” 以防止某些浏览器将JSON输出误解为HTML</code></p>
+<p>Ampersand “&amp;” is also escaped to “\u0026” for the same reason.</p>
+<p><code>同样的Ampersand &quot;&amp;&quot; 也被转义为&quot;\u0026&quot;</code></p>
+<p> This escaping can be disabled using an Encoder that had SetEscapeHTML(false) called on it.</p>
+<p><code>可以使用调用了SetEscapeHTML（false）的编码器禁用此转义</code></p>
+<p>Array and slice values encode as JSON arrays, except that []byte encodes as a base64-encoded string, and a nil slice encodes as the null JSON value.</p>
+<p><code>数组和切片值编码为JSON数组，但[]字节编码为base64编码的字符串，而nil切片编码为空JSON对象。</code></p>
+<p>Struct values encode as JSON objects. Each exported struct field becomes a member of the object, using the field name as the object key, unless the field is omitted for one of the reasons given below.</p>
+<p><code>结构体的值编码为JSON对象。每个导出的struct字段都成为对象的成员，使用字段名作为对象键,
+除非出于下面给出的原因，省略该字段</code></p>
+<p>The encoding of each struct field can be customized by the format string stored under the “json” key in the struct field’s tag. </p>
+<p><code>每个结构字段的编码可以通过存储在struct字段标记中的“json”键下的格式字符串来定制</code></p>
+<p>The format string gives the name of the field, possibly followed by a comma-separated list of options.</p>
+<p><code>格式字符串给出了字段的名称，可能后跟逗号分隔的选项列表。</code></p>
+<p>The name may be empty in order to specify options without overriding the default field name.</p>
+<p><code>名称可以为空，以便指定选项而不覆盖默认字段名称。</code></p>
+<p>The “omitempty” option specifies that the field should be omitted from the encoding if the field has an empty value, defined as false, 0, a nil pointer, a nil interface value, and any empty array, slice, map, or string.</p>
+<p><code>“omitempty”选项指定如果字段是空值(被定义为false, 0 , nil指针，nil接口以及任何空数组、切片、map、字符串等)，则应从编码中省略该字段</code></p>
+<p>As a special case, if the field tag is “-“, the field is always omitted. Note that a field with name “-“ can still be generated using the tag “-,”.</p>
+<p>Examples of struct field tags and their meanings:</p>
+<pre><code>package main
+
+import (
+    &quot;encoding/json&quot;
+    &quot;fmt&quot;
+    &quot;os&quot;
+)
+
+func main() {
+    type ColorGroup struct {
+        ID     int
+        Name   string
+        Colors []string
+    }
+    group := ColorGroup{
+        ID:     1,
+        Name:   &quot;Reds&quot;,
+        Colors: []string{&quot;Crimson&quot;, &quot;Red&quot;, &quot;Ruby&quot;, &quot;Maroon&quot;},
+    }
+    b, err := json.Marshal(group)
+    if err != nil {
+        fmt.Println(&quot;error:&quot;, err)
+    }
+    os.Stdout.Write(b)
+}
+
+// Field appears in JSON as key &quot;myName&quot;.
+Name string `json:&quot;MyName&quot;`
+// output
+//{&quot;ID&quot;:1,&quot;MyName&quot;:&quot;Reds&quot;,&quot;Colors&quot;:[&quot;Crimson&quot;,&quot;Red&quot;,&quot;Ruby&quot;,&quot;Maroon&quot;]}
+
+// Field appears in JSON as key &quot;myName&quot; and
+// the field is omitted from the object if its value is empty,
+// as defined above.
+Name string `json:&quot;MyName,omitempty&quot;`
+// 将上面Name: &quot;Reds&quot; =&gt; Name: &quot;&quot;
+// output, 由于使用了omitempty选项，MyName字段被忽略掉
+// {&quot;ID&quot;:1,&quot;Colors&quot;:[&quot;Crimson&quot;,&quot;Red&quot;,&quot;Ruby&quot;,&quot;Maroon&quot;]}
+
+// Field appears in JSON as key &quot;Field&quot; (the default), but
+// the field is skipped if empty.
+// Note the leading comma.
+Name string `json:&quot;,omitempty&quot;`
+// 将上面Name: &quot;Reds&quot; =&gt; Name: &quot;&quot;
+//{&quot;ID&quot;:1,&quot;Colors&quot;:[&quot;Crimson&quot;,&quot;Red&quot;,&quot;Ruby&quot;,&quot;Maroon&quot;]}
+
+
+// Field is ignored by this package.
+//忽略字段
+Name string `json:&quot;-&quot;`
+// {&quot;ID&quot;:1,&quot;Colors&quot;:[&quot;Crimson&quot;,&quot;Red&quot;,&quot;Ruby&quot;,&quot;Maroon&quot;]}
+
+// Field appears in JSON as key &quot;-&quot;.
+Name string `json:&quot;-,&quot;`
+// {&quot;ID&quot;:1,&quot;-&quot;:&quot;Reds&quot;,&quot;Colors&quot;:[&quot;Crimson&quot;,&quot;Red&quot;,&quot;Ruby&quot;,&quot;Maroon&quot;]}
+</code></pre><p>The “string” option signals that a field is stored as JSON inside a JSON-encoded string. It applies only to fields of string, floating point, integer, or boolean types. This extra level of encoding is sometimes used when communicating with JavaScript programs:</p>
+<p><code>“string”选项表示字段在JSON编码的字符串中存储为JSON。 它仅适用于字符串，浮点，整数或布尔类型的字段。 在与JavaScript程序通信时，有时会使用这种额外的编码级别：</code></p>
+<pre><code>ID int `json:&quot;,string&quot;`
+//仍然使用上面的例子
+// 可以看到ID转为&quot;1&quot;
+//{&quot;ID&quot;:&quot;1&quot;,&quot;Name&quot;:&quot;Reds&quot;,&quot;Colors&quot;:[&quot;Crimson&quot;,&quot;Red&quot;,&quot;Ruby&quot;,&quot;Maroon&quot;]}
+</code></pre><p>The key name will be used if it’s a non-empty string consisting of only Unicode letters, digits, and ASCII punctuation except quotation marks, backslash, and comma.</p>
+<p><code>如果字段名称是只包含Unicode字母，数字和ASCII标点符号（引号，反斜杠和逗号除外） 的非空字符串，则该字段名将被使用</code></p>
+<p>Anonymous struct fields are usually marshaled as if their inner exported fields were fields in the outer struct, subject to the usual Go visibility rules amended as described in the next paragraph.An anonymous struct field with a name given in its JSON tag is treated as having that name, rather than being anonymous.An anonymous struct field of interface type is treated the same as having that type as its name, rather than being anonymous</p>
+<p><code>匿名结构体字段通常会被编码，就好像它们内部导出的字段是外部结构中的字段一样，受到通常的Go可见性规则的限制，如下一段所述。在其JSON标记中给出名称的匿名结构字段被视为具有该名称，而不是匿名。 接口类型的匿名结构字段的处理方式与将该类型作为其名称相同，而不是匿名。</code></p>
+<pre><code>//将上面的例子改造一下，ColorGroup 增加一个匿名结构体 Rgb
+
+type Rgb struct {
+    R, G, B int
+}
+
+type ColorGroup struct {
+        ID     int `json:&quot;,string&quot;`
+        Name   string
+        Colors []string
+        Rgb // 匿名结构体
+}
+group := ColorGroup{
+        1,
+        &quot;Reds&quot;,
+        []string{&quot;Crimson&quot;, &quot;Red&quot;, &quot;Ruby&quot;, &quot;Maroon&quot;},
+        Rgb{50, 50, 50},
+}
+
+// output
+//{&quot;ID&quot;:&quot;1&quot;,&quot;Name&quot;:&quot;Reds&quot;,&quot;Colors&quot;:[&quot;Crimson&quot;,&quot;Red&quot;,&quot;Ruby&quot;,&quot;Maroon&quot;],&quot;R&quot;:50,&quot;G&quot;:50,&quot;B&quot;:50}
+
+type ColorGroup struct {
+        ID     int `json:&quot;,string&quot;`
+        Name   string
+        Colors []string
+        Rgb `json:&quot;rgb&quot;` // json 重命名选项 
+}
+// {&quot;ID&quot;:&quot;1&quot;,&quot;Name&quot;:&quot;Reds&quot;,&quot;Colors&quot;:[&quot;Crimson&quot;,&quot;Red&quot;,&quot;Ruby&quot;,&quot;Maroon&quot;],&quot;rgb&quot;:{&quot;R&quot;:50,&quot;G&quot;:50,&quot;B&quot;:50}}
+</code></pre><p>The Go visibility rules for struct fields are amended for JSON when deciding which field to marshal or unmarshal. If there are multiple fields at the same level, and that level is the least nested (and would therefore be the nesting level selected by the usual Go rules), the following extra rules apply:</p>
+
+            
+                
+
+            
+        </div>
+        <div class="post-tool">
+            <a class="btn-thumbs-up" href="javascript:void(0);" data-cid="52" title="95">
+                <i class="fa fa-thumbs-up" aria-hidden="true"></i> 打赏
+            </a>
+        </div>
+        
+        <div class="post-tags">标签：
+            
+            <a href="/tags/golang/">golang</a>
+            
+        </div>
+        
+    </article>
+    
+        <p style="text-align: center">本文代表个人观点，内容仅供参考。若有不恰当之处，望不吝赐教！</p>
+    
+    
+    
+
+</div>
+<script src="/js/busuanzi.pure.mini.js"></script>
+
+
+        </div><!-- end #main-->
+    </div><!-- end #body -->
+    <footer class="footer">
+    <div class="footer-inner" style="text-align: center">
+        <p>
+            <a href="/about" title="关于">关于</a>&nbsp;&nbsp<em>·</em>&nbsp;&nbsp
+            <!-- 自定义链接 -->
+            <a href="/help" title="帮助">帮助</a>&nbsp;&nbsp<em>·</em>&nbsp;&nbsp
+            <a href="/links" title="友链">友链</a>&nbsp;&nbsp<em>·</em>&nbsp;&nbsp
+            <a href="/sitemap.xml" title="地图">地图</a>
+        </p>
+        <p>
+            本站已建立&nbsp<a href="/timeline" id="siteBuildingTime"></a>&nbsp天，<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="licence">采用知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议创作</a><br>
+            ©2017-<span id="cpYear"></span> 基于&nbsp<a href="http://hexo.io" target="_blank" rel="nofollow">Hexo</a>
+            ，主题采用&nbsp&nbsp<a href="https://github.com/tangkunyin/hexo-theme-jsimple" target="_blank" rel="bookmark">JSimple</a>
+            ，作者&nbsp<a href="https://www.zhengwenkai.com" target="_blank" rel="friend">口阿岂几</a>
+            ，Hosted by <a href="https://pages.github.com/" target="_blank" rel="nofollow">GitHub Pages</a>
+        </p>
+    </div>
+</footer>
+<script src="/js/SimpleCore.js"></script>
+
+</div>
+<!-- search pop -->
+<div class="popup search-popup local-search-popup">
+    <div class="local-search-header clearfix">
+        <span class="search-icon">
+            <i class="fa fa-search"></i>
+        </span>
+        <span class="popup-btn-close">
+            <i class="fa fa-times-circle"></i>
+        </span>
+        <div class="local-search-input-wrapper">
+            <input id="local-search-input" spellcheck="false" type="text" autocomplete="off" placeholder="请输入查询关键词">
+        </div>
+    </div>
+    <div id="local-search-result"></div>
+</div>
+<div class="fixed-btn">
+    <a class="btn-gotop" href="javascript:"> <i class="fa fa-angle-up"></i></a>
+</div>
+<script>
+    $(function () {
+        var jsi_config = {
+            buildingTime: '09/11/2018',
+            current: $('.post-tags').length > 0 ? 'post' : 'archive',
+            snsQRCode: '/images/sns-qrcode.png',
+            donateImg: '/images/donate-qr.png',
+            localSearch: { dbPath: '' },
+            readMode: 'day'
+        };
+        
+        SimpleCore.init(jsi_config);
+        
+    });
+</script>
+</body>
+</html>

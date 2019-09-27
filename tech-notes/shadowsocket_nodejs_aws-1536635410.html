@@ -24,11 +24,11 @@
 <link rel="shortcut icon" href="/images/favicon.png">
 
 
-<title>归档- 2019/9 - 啊凯说</title>
+<title>aws以及shadowsocket - 啊凯说</title>
 
-<meta name="keywords" content="技术博客, php, javascript, golang, linux, 随笔">
+<meta name="keywords" content="shadowsocket nodejs linux">
 
-<meta name="description " content="做一下技术积累，记录一下自己的学习。">
+<meta name="description " content="aws使用, shadowsocket安装启动, 客户端配置">
 
     <script type="text/x-mathjax-config">
         MathJax.Hub.Config({
@@ -82,8 +82,22 @@
 
             <div class="page-title">
     <ul>
-        <li><a href="/" data-name="首页" title="Back Home">首页</a></li>
-        <li><a href="/tags" data-name="标签云" title="标签云">标签</a></li>
+        <li><a href="/">最近</a></li>
+        
+            
+                <li class="active">
+                    <a href="/categories/tech-notes" data-name="技术">技术</a>
+                </li>
+            
+                <li class>
+                    <a href="/categories/humanities" data-name="人文">人文</a>
+                </li>
+            
+                <li class>
+                    <a href="/categories/others" data-name="其他">其他</a>
+                </li>
+            
+        
         <li class="page-search">
     <form id="search" class="search-form">
         <input type="text" readonly="readonly" id="local-search-input-tip" placeholder="读物检索~">
@@ -96,95 +110,89 @@
 <div class="main-inner">
     <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
         <div class="post-header">
-            <h3 class="post-title">很好，目前已有7篇文章，继续努力(ง •_•)ง</h3>
-        </div>
-        
-
-        <div class="post-content markdown-body" itemprop="articleBody">
-            <div class="archives">
-                
-                
-                
-                
-                
-                <div class="archives-item">
-                    <h2>2019年09月</h2>
-                    <ul class="archives_list">
-                        
-                        <li>11日11:54:10
-                            <a href="/tech-notes/golang-http-1568202850.html">Golang Http包</a>
-                            
-                        </li>
-                        
-                
-                
-                
-                        <li>11日11:51:10
-                            <a href="/tech-notes/golang-encodingjson-Marshal-1568202670.html">Golang Encoding/json Marshal方法</a>
-                            
-                        </li>
-                        
-                    </ul>
-                </div>
-                
-                
-                
-                
-                
-                <div class="archives-item">
-                    <h2>2018年09月</h2>
-                    <ul class="archives_list">
-                        
-                        <li>11日11:48:10
-                            <a href="/tech-notes/NodeJS-path.resolve-1536666490.html">NodeJS path.resolve</a>
-                            
-                        </li>
-                        
-                
-                
-                
-                        <li>11日11:33:10
-                            <a href="/tech-notes/WebRTC-1568201590.html">WebRTC学习</a>
-                            
-                        </li>
-                        
-                
-                
-                
-                        <li>11日11:29:10
-                            <a href="/tech-notes/hexo-create-blog-1536635410.html">使用Hexo生成blog</a>
-                            
-                        </li>
-                        
-                
-                
-                
-                        <li>11日11:10:10
-                            <a href="/tech-notes/shadowsocket_nodejs_aws-1536635410.html">Aws以及shadowsocket</a>
-                            
-                        </li>
-                        
-                
-                
-                
-                        <li>11日11:10:10
-                            <a href="/tech-notes/install_zsh-1536635410.html">手动安装Zsh</a>
-                            
-                        </li>
-                        
-                    </ul>
-                </div>
-                
-                
+            <div class="post-author clearfix">
+                <a class="avatar fleft" href="https://www.zhengwenkai.com" target="_blank">
+                    <img width="48" src="/images/favicon.png" alt="avatar">
+                </a>
+                <p><span class="label">作者</span>
+                    <a href="https://www.zhengwenkai.com" target="_blank">口阿岂几</a>
+                    <span title="最后编辑于&nbsp;2018-09-11">2018-09-11</span>
+                </p>
+                <p>一个写着写着就越来越多的blog</p>
+            </div>
+            <h2 class="post-title">Aws以及shadowsocket</h2>
+            <div class="post-meta">
+                本文共计705个字 |
+                您是第&nbsp;<span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span>位看到它们的小伙伴
             </div>
         </div>
+        <div class="post-content markdown-body">
+            <p>一直嫌麻烦都是直接买的vpn，最近一直使用的vpn无法使用了，又不想装那种vpn客户端，有人推荐的蓝灯，下载一看觉得太贵了。既然都没有满意的就买一个vps自己搞吧。以前申请过aws，就拿它先练练手了</p>
+<ul>
+<li><p>aws</p>
+<p>  1.直接用以前的账号登陆。如果没有的话可以注册一下</p>
+<p>  2.信用卡是之前就绑定好了，没有的话不知道有没有办法绕过。看过一些文章说是可以用虚拟卡，具体操作可以百度</p>
+<p>  3.进入控制台，选择免费的ec2。目前应该是15G以内的流量免费。是否付费，可以自行选择。不想付费，千万别用超了</p>
+<p>  4.我建了一个ubuntu，安装了npm。</p>
+</li>
+<li><p>shadowsockets 部署</p>
+<p>  1.npm install -g shadowsocks 安装<br>  2.在 /usr/local/lib/node_modules/shadowsocks 目录下可以找到配置文件,我简单配置了一下</p>
+<pre>
+{
+  "server":"0.0.0.0",
+  "server_port":8389,
+  "local_address":"127.0.0.1",
+  "local_port":1080,
+  "password":"myladder123",
+  "timeout":600,
+  "method":"aes-256-cfb"
+}
+</pre>
+
+<p>  3.ssserver 启动</p>
+</li>
+<li><p>客户端</p>
+</li>
+</ul>
+<p>找到任何支持shadowsock 的客户端<br>按上面的配置 填入服务器的配置信息链接。不出问题应该就可了</p>
+<blockquote>
+<p>注意的是在aws实例的安全配置需要 配置的入站的端口和ip<br>端口就是你开放给客户端的端口，ip如果自用 可以指定ip。也可以选任意ip</p>
+</blockquote>
+
+            
+                
+
+            
+        </div>
+        <div class="post-tool">
+            <a class="btn-thumbs-up" href="javascript:void(0);" data-cid="52" title="95">
+                <i class="fa fa-thumbs-up" aria-hidden="true"></i> 打赏
+            </a>
+        </div>
+        
+        <div class="post-tags">标签：
+            
+            <a href="/tags/linux/">linux</a>
+            
+            <a href="/tags/nodejs/">nodejs</a>
+            
+        </div>
+        
     </article>
+    
+        <p style="text-align: center">本文代表个人观点，内容仅供参考。若有不恰当之处，望不吝赐教！</p>
+    
+    
+    
+
 </div>
+<script src="/js/busuanzi.pure.mini.js"></script>
+
 
         </div><!-- end #main-->
     </div><!-- end #body -->
     <footer class="footer">
-    <div class="footer-inner" style="text-align: left">
+    <div class="footer-inner" style="text-align: center">
         <p>
             <a href="/about" title="关于">关于</a>&nbsp;&nbsp<em>·</em>&nbsp;&nbsp
             <!-- 自定义链接 -->

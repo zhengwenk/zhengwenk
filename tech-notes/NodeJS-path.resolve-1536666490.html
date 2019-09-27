@@ -24,11 +24,11 @@
 <link rel="shortcut icon" href="/images/favicon.png">
 
 
-<title>归档- 2019/9 - 啊凯说</title>
+<title>nodejs path.resolve - 啊凯说</title>
 
-<meta name="keywords" content="技术博客, php, javascript, golang, linux, 随笔">
+<meta name="keywords" content="NodeJS path.resolve">
 
-<meta name="description " content="做一下技术积累，记录一下自己的学习。">
+<meta name="description " content="path.resolve 文档翻译">
 
     <script type="text/x-mathjax-config">
         MathJax.Hub.Config({
@@ -82,8 +82,22 @@
 
             <div class="page-title">
     <ul>
-        <li><a href="/" data-name="首页" title="Back Home">首页</a></li>
-        <li><a href="/tags" data-name="标签云" title="标签云">标签</a></li>
+        <li><a href="/">最近</a></li>
+        
+            
+                <li class="active">
+                    <a href="/categories/tech-notes" data-name="技术">技术</a>
+                </li>
+            
+                <li class>
+                    <a href="/categories/humanities" data-name="人文">人文</a>
+                </li>
+            
+                <li class>
+                    <a href="/categories/others" data-name="其他">其他</a>
+                </li>
+            
+        
         <li class="page-search">
     <form id="search" class="search-form">
         <input type="text" readonly="readonly" id="local-search-input-tip" placeholder="读物检索~">
@@ -96,95 +110,68 @@
 <div class="main-inner">
     <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
         <div class="post-header">
-            <h3 class="post-title">很好，目前已有7篇文章，继续努力(ง •_•)ง</h3>
-        </div>
-        
-
-        <div class="post-content markdown-body" itemprop="articleBody">
-            <div class="archives">
-                
-                
-                
-                
-                
-                <div class="archives-item">
-                    <h2>2019年09月</h2>
-                    <ul class="archives_list">
-                        
-                        <li>11日11:54:10
-                            <a href="/tech-notes/golang-http-1568202850.html">Golang Http包</a>
-                            
-                        </li>
-                        
-                
-                
-                
-                        <li>11日11:51:10
-                            <a href="/tech-notes/golang-encodingjson-Marshal-1568202670.html">Golang Encoding/json Marshal方法</a>
-                            
-                        </li>
-                        
-                    </ul>
-                </div>
-                
-                
-                
-                
-                
-                <div class="archives-item">
-                    <h2>2018年09月</h2>
-                    <ul class="archives_list">
-                        
-                        <li>11日11:48:10
-                            <a href="/tech-notes/NodeJS-path.resolve-1536666490.html">NodeJS path.resolve</a>
-                            
-                        </li>
-                        
-                
-                
-                
-                        <li>11日11:33:10
-                            <a href="/tech-notes/WebRTC-1568201590.html">WebRTC学习</a>
-                            
-                        </li>
-                        
-                
-                
-                
-                        <li>11日11:29:10
-                            <a href="/tech-notes/hexo-create-blog-1536635410.html">使用Hexo生成blog</a>
-                            
-                        </li>
-                        
-                
-                
-                
-                        <li>11日11:10:10
-                            <a href="/tech-notes/shadowsocket_nodejs_aws-1536635410.html">Aws以及shadowsocket</a>
-                            
-                        </li>
-                        
-                
-                
-                
-                        <li>11日11:10:10
-                            <a href="/tech-notes/install_zsh-1536635410.html">手动安装Zsh</a>
-                            
-                        </li>
-                        
-                    </ul>
-                </div>
-                
-                
+            <div class="post-author clearfix">
+                <a class="avatar fleft" href="https://www.zhengwenkai.com" target="_blank">
+                    <img width="48" src="/images/favicon.png" alt="avatar">
+                </a>
+                <p><span class="label">作者</span>
+                    <a href="https://www.zhengwenkai.com" target="_blank">口阿岂几</a>
+                    <span title="最后编辑于&nbsp;2018-09-11">2018-09-11</span>
+                </p>
+                <p>一个写着写着就越来越多的blog</p>
+            </div>
+            <h2 class="post-title">NodeJS path.resolve</h2>
+            <div class="post-meta">
+                本文共计1073个字 |
+                您是第&nbsp;<span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span>位看到它们的小伙伴
             </div>
         </div>
+        <div class="post-content markdown-body">
+            <h1 id="path-resolve"><a href="#path-resolve" class="headerlink" title="path.resolve"></a>path.resolve</h1><h3 id="path-resolve-…paths"><a href="#path-resolve-…paths" class="headerlink" title="path.resolve([…paths])"></a>path.resolve([…paths])</h3><ul>
+<li>…paths <string> A sequence of paths or path segments (一系列的路径 or 路径片段)</string></li>
+<li>Returns: <string> absolute path (函数返回绝对路径).</string></li>
+</ul>
+<p>The <strong>path.resolve()</strong> method resolves a sequence of paths or path segments into an absolute path.</p>
+<p>The given sequence of paths is processed from right to left （给定的路径被从右往左处理，直到构建出一个绝对路径）</p>
+<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">path.resolve(<span class="string">'/foo'</span>, <span class="string">'/bar'</span>, <span class="string">'baz'</span>)  </span><br><span class="line"><span class="regexp">//</span> 返回 <span class="regexp">/bar/</span>baz</span><br><span class="line"></span><br><span class="line">path.resolve(<span class="string">'/foo/bar'</span>, <span class="string">'/tmp/file/'</span>);</span><br><span class="line"><span class="regexp">//</span> 返回: <span class="string">'/tmp/file'</span></span><br></pre></td></tr></table></figure>
+<p>If after processing all given path segments an absolute path has not yet been generated, the current working directory is used</p>
+<figure class="highlight crmsh"><table><tr><td class="code"><pre><span class="line">path.resolve('wwwroot', 'static_files/png/', '../gif/image.gif');</span><br><span class="line">// 如果当前工作目录为 /home/myself/<span class="keyword">node</span><span class="title">，</span></span><br><span class="line"><span class="title">// 则返回 '/home</span>/myself/<span class="keyword">node</span><span class="title">/wwwroot</span>/static_files/gif/image.gif'</span><br></pre></td></tr></table></figure>
+<p>The resulting path is normalized and trailing slashes are removed unless the path is resolved to the root directory。 结果路径已被规范化并移除尾部斜杠，除非被解析为根目录</p>
+<p>Zero-length path segments are ignored.</p>
+<p>If no path segments are passed, path.resolve() will return the absolute path of the current working directory.</p>
+<figure class="highlight less"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">path</span><span class="selector-class">.resolve</span>(<span class="string">''</span>)</span><br><span class="line"><span class="selector-tag">path</span><span class="selector-class">.resolve</span>()</span><br><span class="line"><span class="comment">// /home/xxx  current working directory</span></span><br></pre></td></tr></table></figure>
+            
+                
+
+            
+        </div>
+        <div class="post-tool">
+            <a class="btn-thumbs-up" href="javascript:void(0);" data-cid="52" title="95">
+                <i class="fa fa-thumbs-up" aria-hidden="true"></i> 打赏
+            </a>
+        </div>
+        
+        <div class="post-tags">标签：
+            
+            <a href="/tags/nodejs/">nodejs</a>
+            
+        </div>
+        
     </article>
+    
+        <p style="text-align: center">本文代表个人观点，内容仅供参考。若有不恰当之处，望不吝赐教！</p>
+    
+    
+    
+
 </div>
+<script src="/js/busuanzi.pure.mini.js"></script>
+
 
         </div><!-- end #main-->
     </div><!-- end #body -->
     <footer class="footer">
-    <div class="footer-inner" style="text-align: left">
+    <div class="footer-inner" style="text-align: center">
         <p>
             <a href="/about" title="关于">关于</a>&nbsp;&nbsp<em>·</em>&nbsp;&nbsp
             <!-- 自定义链接 -->

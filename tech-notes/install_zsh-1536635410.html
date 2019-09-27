@@ -24,11 +24,11 @@
 <link rel="shortcut icon" href="/images/favicon.png">
 
 
-<title>归档- 2019/9 - 啊凯说</title>
+<title>手动安装zsh - 啊凯说</title>
 
-<meta name="keywords" content="技术博客, php, javascript, golang, linux, 随笔">
+<meta name="keywords" content="zsh 安装 linux shell">
 
-<meta name="description " content="做一下技术积累，记录一下自己的学习。">
+<meta name="description " content="zsh安装，zsh插件">
 
     <script type="text/x-mathjax-config">
         MathJax.Hub.Config({
@@ -82,8 +82,22 @@
 
             <div class="page-title">
     <ul>
-        <li><a href="/" data-name="首页" title="Back Home">首页</a></li>
-        <li><a href="/tags" data-name="标签云" title="标签云">标签</a></li>
+        <li><a href="/">最近</a></li>
+        
+            
+                <li class="active">
+                    <a href="/categories/tech-notes" data-name="技术">技术</a>
+                </li>
+            
+                <li class>
+                    <a href="/categories/humanities" data-name="人文">人文</a>
+                </li>
+            
+                <li class>
+                    <a href="/categories/others" data-name="其他">其他</a>
+                </li>
+            
+        
         <li class="page-search">
     <form id="search" class="search-form">
         <input type="text" readonly="readonly" id="local-search-input-tip" placeholder="读物检索~">
@@ -96,95 +110,89 @@
 <div class="main-inner">
     <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
         <div class="post-header">
-            <h3 class="post-title">很好，目前已有7篇文章，继续努力(ง •_•)ง</h3>
-        </div>
-        
-
-        <div class="post-content markdown-body" itemprop="articleBody">
-            <div class="archives">
-                
-                
-                
-                
-                
-                <div class="archives-item">
-                    <h2>2019年09月</h2>
-                    <ul class="archives_list">
-                        
-                        <li>11日11:54:10
-                            <a href="/tech-notes/golang-http-1568202850.html">Golang Http包</a>
-                            
-                        </li>
-                        
-                
-                
-                
-                        <li>11日11:51:10
-                            <a href="/tech-notes/golang-encodingjson-Marshal-1568202670.html">Golang Encoding/json Marshal方法</a>
-                            
-                        </li>
-                        
-                    </ul>
-                </div>
-                
-                
-                
-                
-                
-                <div class="archives-item">
-                    <h2>2018年09月</h2>
-                    <ul class="archives_list">
-                        
-                        <li>11日11:48:10
-                            <a href="/tech-notes/NodeJS-path.resolve-1536666490.html">NodeJS path.resolve</a>
-                            
-                        </li>
-                        
-                
-                
-                
-                        <li>11日11:33:10
-                            <a href="/tech-notes/WebRTC-1568201590.html">WebRTC学习</a>
-                            
-                        </li>
-                        
-                
-                
-                
-                        <li>11日11:29:10
-                            <a href="/tech-notes/hexo-create-blog-1536635410.html">使用Hexo生成blog</a>
-                            
-                        </li>
-                        
-                
-                
-                
-                        <li>11日11:10:10
-                            <a href="/tech-notes/shadowsocket_nodejs_aws-1536635410.html">Aws以及shadowsocket</a>
-                            
-                        </li>
-                        
-                
-                
-                
-                        <li>11日11:10:10
-                            <a href="/tech-notes/install_zsh-1536635410.html">手动安装Zsh</a>
-                            
-                        </li>
-                        
-                    </ul>
-                </div>
-                
-                
+            <div class="post-author clearfix">
+                <a class="avatar fleft" href="https://www.zhengwenkai.com" target="_blank">
+                    <img width="48" src="/images/favicon.png" alt="avatar">
+                </a>
+                <p><span class="label">作者</span>
+                    <a href="https://www.zhengwenkai.com" target="_blank">口阿岂几</a>
+                    <span title="最后编辑于&nbsp;2018-09-11">2018-09-11</span>
+                </p>
+                <p>一个写着写着就越来越多的blog</p>
+            </div>
+            <h2 class="post-title">手动安装Zsh</h2>
+            <div class="post-meta">
+                本文共计969个字 |
+                您是第&nbsp;<span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span>位看到它们的小伙伴
             </div>
         </div>
+        <div class="post-content markdown-body">
+            <p>接手一个老旧的项目，只能在开发机上开发。果断给自己安装zsh, 就算是只为了git插件也值得安装。(无root权限)</p>
+<ul>
+<li>下载</li>
+</ul>
+<p><code>wget http://sourceforge.net/projects/zsh/files/zsh/5.0.7/zsh-5.0.7.tar.gz</code></p>
+<ul>
+<li>安装</li>
+</ul>
+<figure class="highlight jboss-cli"><table><tr><td class="code"><pre><span class="line"><span class="keyword">cd</span> ~<span class="string">/tmp/zsh-5.0.7</span></span><br><span class="line"><span class="string">./configure</span> <span class="params">--prefix=</span>$HOME</span><br><span class="line">make</span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
+<ul>
+<li>安装 oh my zsh</li>
+</ul>
+<p>自动安装</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O - | sh</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>我试了自动安装会提示 Zsh is not installed! Please install zsh first!。看了一下安装的sh文件，会搜索 /etc/shells 文件 <code>$(grep /zsh$ /etc/shells | wc -l)</code></p>
+</blockquote>
+<p>手动安装</p>
+<figure class="highlight crystal"><table><tr><td class="code"><pre><span class="line">git clone <span class="symbol">git:</span>/<span class="regexp">/github.com/robbyrussell</span><span class="regexp">/oh-my-zsh.git ~/</span>.oh-my-zsh</span><br><span class="line">cp ~<span class="regexp">/.oh-my-zsh/templates</span><span class="regexp">/zshrc.zsh-template ~/</span>.zshrc</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>最后就是设置成默认的shell。chsh这个命令是不能用了，因为没有root权限，所以只能在 .bash_profile 里面做手脚了。在 .bash_profile里面添加如下内容：<br><code>exec $HOME/bin/zsh -l</code><br>好了现在ssh连接到服务器上就变了zsh了。</p>
+</blockquote>
+<ul>
+<li>安装autojump</li>
+</ul>
+<p>下载</p>
+<p><code>git clone git://github.com/joelthelion/autojump.git</code></p>
+<p>安装</p>
+<figure class="highlight vim"><table><tr><td class="code"><pre><span class="line">进入autojump的目录 执行安装的<span class="keyword">py</span>脚本</span><br><span class="line">./install.<span class="keyword">py</span></span><br></pre></td></tr></table></figure>
+<p>安装完后，按照提示 最后把以下代码加入.zshrc：<br><figure class="highlight lua"><table><tr><td class="code"><pre><span class="line"><span class="string">[[ -s ~/.autojump/etc/profile.d/autojump.sh ]]</span> &amp;&amp; . ~/.autojump/etc/profile.d/autojump.sh</span><br></pre></td></tr></table></figure></p>
+<p>cd 过一次的目录 下次都可以直接跳转<br>重新打开一个shell窗口，尝试一下吧。</p>
+
+            
+                
+
+            
+        </div>
+        <div class="post-tool">
+            <a class="btn-thumbs-up" href="javascript:void(0);" data-cid="52" title="95">
+                <i class="fa fa-thumbs-up" aria-hidden="true"></i> 打赏
+            </a>
+        </div>
+        
+        <div class="post-tags">标签：
+            
+            <a href="/tags/shell/">shell</a>
+            
+            <a href="/tags/linux/">linux</a>
+            
+        </div>
+        
     </article>
+    
+        <p style="text-align: center">本文代表个人观点，内容仅供参考。若有不恰当之处，望不吝赐教！</p>
+    
+    
+    
+
 </div>
+<script src="/js/busuanzi.pure.mini.js"></script>
+
 
         </div><!-- end #main-->
     </div><!-- end #body -->
     <footer class="footer">
-    <div class="footer-inner" style="text-align: left">
+    <div class="footer-inner" style="text-align: center">
         <p>
             <a href="/about" title="关于">关于</a>&nbsp;&nbsp<em>·</em>&nbsp;&nbsp
             <!-- 自定义链接 -->
