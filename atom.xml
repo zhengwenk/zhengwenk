@@ -146,9 +146,9 @@
       <category term="技术" scheme="https://www.zhengwenkai.com/categories/tech-notes/"/>
     
     
-      <category term="linux" scheme="https://www.zhengwenkai.com/tags/linux/"/>
-    
       <category term="nodejs" scheme="https://www.zhengwenkai.com/tags/nodejs/"/>
+    
+      <category term="linux" scheme="https://www.zhengwenkai.com/tags/linux/"/>
     
   </entry>
   
@@ -170,9 +170,9 @@
       <category term="技术" scheme="https://www.zhengwenkai.com/categories/tech-notes/"/>
     
     
-      <category term="shell" scheme="https://www.zhengwenkai.com/tags/shell/"/>
-    
       <category term="linux" scheme="https://www.zhengwenkai.com/tags/linux/"/>
+    
+      <category term="shell" scheme="https://www.zhengwenkai.com/tags/shell/"/>
     
   </entry>
   
